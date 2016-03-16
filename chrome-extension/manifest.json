@@ -1,0 +1,22 @@
+{
+  "name": "LeetCode-Ext",
+  "version": "0.1.0",
+  "description": "LeetCode.com Extension",
+  "browser_action": {
+    "default_icon": "favicon.ico",
+    "default_title": "LeetCode Extension",
+    "default_popup": ""
+  },
+  "permissions": [
+    "https://chrome-ext.luxiakun.com/leetcode-ext"
+  ],
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problemset/algorithms/"],
+      "css": [],
+      "js": ["leetcode-ext.js"]
+    }
+  ],
+  "manifest_version": 2
+}
