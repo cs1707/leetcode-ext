@@ -10,7 +10,6 @@
   "permissions": [
     "https://chrome-ext.luxiakun.com/leetcode-ext"
   ],
-  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problemset/algorithms/"],

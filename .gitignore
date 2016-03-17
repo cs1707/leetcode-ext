@@ -33,5 +33,5 @@ node_modules
 .node_repl_history
 .idea
 
-leetcode-ext.crx
-leetcode-ext.pem
+chrome-extension.crx
+chrome-extension.pem
