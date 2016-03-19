@@ -24,14 +24,18 @@ function restore_options() {
 
 function save_token() {
     var token = $("#token").val();
+    chrome.storage.sync.set({
+        token: token,
+    }, function() {
+        set_status("token saved", "succ");
+    });
     get_user(token, function(jsonData) {
         if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
         var user = jsonData['login'];
         chrome.storage.sync.set({
-            token: token,
             user: user
         }, function() {
-            set_status("token saved", "succ");
+            set_status("token works.", "succ");
         });
     });
 }
@@ -109,9 +113,11 @@ function create_file() {
             beforeSend: function(request) {
                 request.setRequestHeader("Authorization", "token " + token);
             },
-            success: function(jsonData) {
+            success: function() {
+                set_status("Create README.md successfully.", "succ");
             },
-            error: function(err) {
+            error: function() {
+                set_status("Fail to create README.md", "err");
             }
         });
     });
@@ -128,19 +134,20 @@ function get_user(token, callback) {
         },
         success: callback,
         error: function() {
-
+            set_status("Fail to get user, wrong token.", "err");
         }
     });
 }
 
 function set_status(content, status) {
     var $obj = $("#status");
+    var old = $obj.html();
     if (status == "succ") {
-        $obj.html(content);
+        $obj.html(old + "<br>" + content);
         $obj.css("color", "green");
         setTimeout(function() {
             $obj.html("");
-        }, 2000);
+        }, 5000);
     } else {
         $obj.html(content);
         $obj.css("color", "red");

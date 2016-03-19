@@ -50,7 +50,7 @@ function add_node() {
     var $buttons = $("" +
         "<button type='button' class='btn btn-success' id='commit_question'>Add Question</button>&nbsp;&nbsp;" +
         "<button type='button' class='btn btn-success' data-toggle='modal' data-target='#readme' id='readme_button'>Add 'README.md'</button>" +
-        "<span style='float:center' id='commit_status'></span>");
+        "<span style='padding-left:10px;float:center' id='commit_status'></span>");
     var $div = $('' +
         '<div class="action">' +
             '<form class="form-inline">' +
