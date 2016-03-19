@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Leetcode extension options</title>
+  <script type="text/javascript" src="./jquery.js"></script>
+  <script type="text/javascript" src="./webtoolkit.base64.js"></script>
+  <style type="text/css">
+    body {
+      width: 500px;
+    }
+    .content {
+      margin: 20px auto;
+      text-align: center;
+    }
+    table tr td {
+      padding: 5px;
+    }
+    table tr td.field {
+      text-align: right;
+    }
+    table tr td.property {
+      text-align: left;
+    }
+    button {
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div id="status"></div>
+    <table>
+      <tr>
+        <td class="field">GitHub Personal access tokens:</td>
+        <td class="property"><input type="text" id="token" style="width:280px"/></td>
+        <td><button id="token_save">Save</button></td>
+      </tr>
+      <tr>
+        <td class="field">Repository:</td>
+        <td class="property">
+          <input type="text" id="repo_name"/>
+          <input type="radio" name="repo_private" value="0" checked="checked"/>public
+          <input type="radio" name="repo_private" value="1" />private
+        </td>
+        <td class="property">
+          <button id="repo_create">Create</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

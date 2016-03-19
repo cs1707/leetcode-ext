@@ -8,13 +8,24 @@
     "default_popup": ""
   },
   "permissions": [
-    "https://chrome-ext.luxiakun.com/leetcode-ext"
+    "storage",
+    "https://chrome-ext.luxiakun.com/leetcode-ext",
+    "https://api.github.com/"
   ],
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problemset/algorithms/"],
       "css": [],
       "js": ["leetcode-ext.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "css": [],
+      "js": ["jquery.js", "webtoolkit.base64.js", "to-markdown.js", "leetcode-ext-github.js"]
     }
   ],
   "manifest_version": 2
