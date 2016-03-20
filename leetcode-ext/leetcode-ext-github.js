@@ -31,18 +31,20 @@ var postfix = {
         token = items.token;
         user = items.user;
         repo = items.repo_name;
-    });
-    add_node();
-    $("#readme_button").click(restore);
-    $("#commit_readme").click(commit);
-    $("#commit_question").click(commit);
-    $("#button1").click(commit);
-    $("#filename").val(get_filename());
-    $('select[name=lang]').change(function() {
-        var ext = get_extension();
-        var filename = get_filename();
-        filename = filename.substring(0, filename.lastIndexOf(".")) + ext;
-        $("#filename").val(filename);
+        if (token && user) {
+            add_node();
+            $("#readme_button").click(restore);
+            $("#commit_readme").click(commit);
+            $("#commit_question").click(commit);
+            $("#button1").click(commit);
+            $("#filename").val(get_filename());
+            $('select[name=lang]').change(function () {
+                var ext = get_extension();
+                var filename = get_filename();
+                filename = filename.substring(0, filename.lastIndexOf(".")) + ext;
+                $("#filename").val(filename);
+            });
+        }
     });
 })();
 

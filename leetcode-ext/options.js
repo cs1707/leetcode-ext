@@ -19,6 +19,7 @@ function restore_options() {
         $("#token").val(items.token);
         $("#repo_name").val(items.repo_name);
         $("input:radio[name=repo_private]")[items.repo_private].checked = true;
+        check_token("");
     });
 }
 
@@ -28,16 +29,30 @@ function save_token() {
         token: token,
     }, function() {
         set_status("token saved", "succ");
+        check_token("token works");
     });
-    get_user(token, function(jsonData) {
-        if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
-        var user = jsonData['login'];
-        chrome.storage.sync.set({
-            user: user
-        }, function() {
-            set_status("token works.", "succ");
+}
+
+function check_token(tips) {
+    if (!tips) {
+        tips = "";
+    }
+    var token = $("#token").val();
+    if (token != "") {
+        get_user(token, function (jsonData) {
+            if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
+            var user = jsonData['login'];
+            chrome.storage.sync.set({
+                user: user
+            }, function () {
+                set_status(tips, "succ");
+            });
         });
-    });
+    } else {
+        chrome.storage.sync.set({
+            user: ""
+        });
+    }
 }
 
 function create_repo() {
@@ -134,22 +149,34 @@ function get_user(token, callback) {
         },
         success: callback,
         error: function() {
+            chrome.storage.sync.set({
+                user: ""
+            });
             set_status("Fail to get user, wrong token.", "err");
         }
     });
 }
 
 function set_status(content, status) {
+    if (!content) {
+        return false;
+    }
     var $obj = $("#status");
-    var old = $obj.html();
     if (status == "succ") {
-        $obj.html(old + "<br>" + content);
-        $obj.css("color", "green");
+        var old = "";
+        if ($obj.attr("class") == "succ") {
+            old = $obj.html() + "<br>";
+        }
+        $obj.html(old + content);
+        $obj.attr("class", "succ");
+        $obj.show();
         setTimeout(function() {
+            $obj.attr("class", "");
             $obj.html("");
+            $obj.hide();
         }, 5000);
     } else {
         $obj.html(content);
-        $obj.css("color", "red");
+        $obj.attr("class", "err");
     }
 }
