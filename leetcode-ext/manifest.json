@@ -1,6 +1,6 @@
 {
-  "name": "LeetCode-Ext",
-  "version": "0.2.0",
+  "name": "LeetCode Extension",
+  "version": "0.3.0",
   "description": "LeetCode.com Extension",
   "browser_action": {
     "default_icon": "favicon.ico",
@@ -19,13 +19,15 @@
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problemset/algorithms/"],
-      "css": [],
-      "js": ["leetcode-ext.js"]
+      "js": ["leetcode-progress.js"]
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "css": [],
-      "js": ["jquery.js", "webtoolkit.base64.js", "to-markdown.js", "leetcode-ext-github.js"]
+      "js": ["jquery.js", "webtoolkit.base64.js", "to-markdown.js", "leetcode-github.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["jquery.js", "leetcode-hidden.js"]
     }
   ],
   "manifest_version": 2

@@ -38,13 +38,19 @@ var postfix = {
             $("#readme_button").click(restore);
             $("#commit_readme").click(commit);
             $("#commit_question").click(commit);
-            $("#button1").click(commit);
+            //$("#button1").click(commit);
             $("#filename").val(get_filename());
             $('select[name=lang]').change(function () {
                 var ext = get_extension();
                 var filename = get_filename();
                 filename = filename.substring(0, filename.lastIndexOf(".")) + ext;
                 $("#filename").val(filename);
+            });
+            $("#result-state").bind("DOMSubtreeModified", function() {
+                var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
+                if (state != "pending" && state != "judging") {
+                    commit();
+                }
             });
         }
     });
@@ -192,8 +198,9 @@ function update_file(filename, sha) {
         content += toMarkdown($(".question-content:first").html());
         message = "commit automatically by leetcode-ext";
     } else {
+        var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
         content = $("#code_content").val();
-        message = $("#code_message").val();
+        message = "[" + state + "]" + $("#code_message").val();
         if (message == "") {
             message = "commited by leetcode-ext";
         }
