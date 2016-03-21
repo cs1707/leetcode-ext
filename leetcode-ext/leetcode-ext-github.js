@@ -16,7 +16,9 @@ var postfix = {
     javascript: ".js",
     ruby: ".rb",
     swift: ".swift",
-    golang: ".go"
+    golang: ".go",
+    base: ".sh",
+    mysql: ".sql"
 };
 
 (function(){
