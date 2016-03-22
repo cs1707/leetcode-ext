@@ -234,7 +234,7 @@ function create_repo() {
                     content += ' repository "' + name + '" has been created. URL: ';
                     content += '<a href="' + url + '">' + url + '</a>';
                     set_status(content, "succ");
-                    create_file();
+                    setTimeout(create_file(), 2000);
                 });
             },
             error: function() {
