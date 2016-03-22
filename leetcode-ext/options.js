@@ -6,19 +6,37 @@ var github_api = 'https://api.github.com';
 
 $(function() {
     restore_options();
-    $('#token_save').click(save_token);
-    $('#repo_create').click(create_repo);
+    $("#token_save").click(save_token);
+    $("#repo_create").click(create_repo);
+    $("input:radio[name=commit]").change(save_commit);
+    $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
 });
 
 function restore_options() {
     chrome.storage.sync.get({
         token: '',
         repo_name: '',
-        repo_private: 0
+        repo_private: 0,
+        commit: 'any',
+        ac_difficulty: 'show'
     }, function(items) {
         $("#token").val(items.token);
         $("#repo_name").val(items.repo_name);
         $("input:radio[name=repo_private]")[items.repo_private].checked = true;
+        $('input[name="commit"]').each(function() {
+            if (this.value == items.commit) {
+                this.checked = true;
+            } else {
+                this.checked = false;
+            }
+        });
+        $('input[name="ac_difficulty"]').each(function() {
+            if (this.value == items.ac_difficulty) {
+                this.checked = true;
+            } else {
+                this.checked = false;
+            }
+        });
         check_token("");
     });
 }
@@ -33,12 +51,26 @@ function save_token() {
     });
 }
 
+function save_commit() {
+    var ci = $("input:radio[name=commit]:checked").val();
+    chrome.storage.sync.set({
+        commit: ci
+    });
+}
+
+function save_ac_difficulty() {
+    var ac = $("input:radio[name=ac_difficulty]:checked").val();
+    chrome.storage.sync.set({
+        ac_difficulty: ac
+    });
+}
+
 function check_token(tips) {
     if (!tips) {
         tips = "";
     }
     var token = $("#token").val();
-    if (token != "") {
+    if (token !== "") {
         get_user(token, function (jsonData) {
             if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
             var user = jsonData['login'];

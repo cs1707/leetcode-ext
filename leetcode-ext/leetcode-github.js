@@ -38,7 +38,9 @@ var postfix = {
             $("#readme_button").click(restore);
             $("#commit_readme").click(commit);
             $("#commit_question").click(commit);
-            //$("#button1").click(commit);
+            $("#button1").click(function() {
+                $("#commit_status").html("");
+            });
             $("#filename").val(get_filename());
             $('select[name=lang]').change(function () {
                 var ext = get_extension();
@@ -47,10 +49,7 @@ var postfix = {
                 $("#filename").val(filename);
             });
             $("#result-state").bind("DOMSubtreeModified", function() {
-                var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
-                if (state != "pending" && state != "judging") {
-                    commit();
-                }
+                commit();
             });
         }
     });
@@ -111,27 +110,47 @@ function add_node() {
     /* Only by this, the variable in original page can be got.
     * Even using jQuery like before can not get the variable in original page */
     var script = document.createElement("script");
-    script.innerHTML = "get_code();" +
-        "$('select[name=lang]').change(get_code);" +
-        "function get_code() {" +
+    script.innerHTML = "var lxk_editor = {};" +
+        "(function(){" +
             "$('.editor').attr('id', 'ace_editor_id');" +
-            "$('#code_content').val(ace.edit('ace_editor_id').getValue());" +
+            "lxk_editor = ace.edit('ace_editor_id');" +
+            "get_code();" +
+        "})();" +
+        "$('select[name=lang]').change(get_code);" +
+        "$('#button0').click(get_code);" +
+        "$('#button1').click(get_code);" +
+        "function get_code() {" +
+            "" +
+            "$('#code_content').val(lxk_editor.getValue());" +
         "}";
     document.body.appendChild(script);
 
 }
 
 function commit() {
-    var filename = "";
-    if ($(this).attr("id") == "commit_readme") {
-        filename = "README.md";
-    } else if ($(this).attr("id") == "commit_question") {
-        filename = "Question.md";
-    } else {
-        filename = get_filename();
-    }
-    filename = get_path() + "/" + filename;
-    get_file(filename, update_file, update_file);
+    chrome.storage.sync.get({
+        commit: 'any'
+    }, function(items) {
+        var filename = "";
+        if ($(this).attr("id") == "commit_readme") {
+            filename = "README.md";
+        } else if ($(this).attr("id") == "commit_question") {
+            filename = "Question.md";
+        } else {
+            var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
+            if (state != "pending" && state != "judging") {
+                if (items.commit != "accepted" || (items.commit == "accepted" && state == 'accepted')) {
+                    filename = get_filename();
+                } else {
+                    filename = "";
+                }
+            }
+        }
+        if (filename != "") {
+            filename = get_path() + "/" + filename;
+            get_file(filename, update_file, update_file);
+        }
+    });
 }
 
 function restore() {
@@ -189,21 +208,22 @@ function update_file(filename, sha) {
     if (filename == path + "/README.md") {
         content = $("#readme_content").val();
         message = $("#readme_message").val();
-        if (message == "") {
-            message = "commited by leetcode-ext";
+        if (message === "") {
+            message = "committed by LeetCode Extension";
         }
     } else if (filename == path + "/Question.md") {
         content = "# " + $(".question-title:first").children(":first").html() + "\n\n";
-        content += "[Original Page](" + window.location.href + ")\n\n"
+        content += "[Original Page](" + window.location.href + ")\n\n";
         content += toMarkdown($(".question-content:first").html());
-        message = "commit automatically by leetcode-ext";
+        message = "committed by LeetCode Extension";
     } else {
-        var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
         content = $("#code_content").val();
-        message = "[" + state + "]" + $("#code_message").val();
-        if (message == "") {
-            message = "commited by leetcode-ext";
+        message = $("#code_message").val();
+        if (message === "") {
+            message = "committed by LeetCode Extension";
         }
+        var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
+        message = "[" + state + "]" + message;
     }
 
     chrome.storage.sync.get({
@@ -244,7 +264,7 @@ function set_status(filename, status) {
         $obj.css("color", "green");
         setTimeout(function() {
             $obj.html("");
-        }, 2000);
+        }, 10000);
     } else {
         $obj.html("Fail to commit " + filename);
         $obj.css("color", "red");
