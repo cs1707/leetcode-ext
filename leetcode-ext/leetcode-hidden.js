@@ -16,7 +16,7 @@
                 page_problem();
                 $("#result-state").bind("DOMSubtreeModified", function() {
                     var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
-                    if (state == "accepted ") {
+                    if (state == "accepted") {
                         $("#total-submit-ac").show();
                     } else {
                         $("#total-submit-ac").hide();
