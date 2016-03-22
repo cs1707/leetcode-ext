@@ -199,7 +199,7 @@ function get_file(filename, fsucc, ferr) {
                         ferr(filename);
                     }
                 } else {
-                    set_status(filename.substr(path.length + 1), "err");
+                    set_status(filename.substr(path.length + 1), repo, "err");
                 }
             }
         });
@@ -263,19 +263,19 @@ function update_file(filename, sha) {
                 request.setRequestHeader("Authorization", "token " + token);
             },
             success: function() {
-                set_status(filename.substr(path.length + 1), "succ");
+                set_status(filename.substr(path.length + 1), repo, "succ");
             },
             error: function() {
-                set_status(filename.substr(path.length + 1), "err");
+                set_status(filename.substr(path.length + 1), repo, "err");
             }
         });
     });
 }
 
-function set_status(filename, status) {
+function set_status(filename, repo, status) {
     var $obj = filename == "README.md" ? $("#readme_alert") : $("#commit_status");
     if (status == "succ") {
-        $obj.html("Success to commit " + filename);
+        $obj.html('Commit "' + filename + '" to repository "' + repo + '" successfully');
         $obj.css("color", "green");
         setTimeout(function() {
             $obj.html("");

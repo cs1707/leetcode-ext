@@ -12,6 +12,9 @@
       margin: 20px auto;
       text-align: center;
     }
+    .tips {
+      padding: 0 40px 0 40px
+    }
     table tr td {
       padding: 5px;
     }
@@ -35,7 +38,6 @@
 <body>
   <div class="content">
     <div id="status"></div>
-    <div style="color:blue">You can find "Personal access tokens" in "Personal settings" of your GitHub accout profile.</div>
     <table>
       <tr>
         <td class="field">GitHub Personal access token:</td>
@@ -45,12 +47,12 @@
       <tr>
         <td class="field">Repository:</td>
         <td class="property">
-          <input type="text" id="repo_name"/>
+          <input type="text" id="repo_name"/>&nbsp;&nbsp;
           <input type="radio" name="repo_private" value="0" checked="checked"/>public
           <input type="radio" name="repo_private" value="1" />private
         </td>
         <td class="property">
-          <button id="repo_create">Create</button>
+          <button id="repo_add">Add</button>
         </td>
       </tr>
     </table>
@@ -71,6 +73,11 @@
         </td>
       </tr>
     </table>
+  </div>
+  <div class="tips" style="color:gray">
+    Tips: <br />
+    - You can find "Personal access tokens" in "Personal settings" of your GitHub accout profile.<br />
+    - Click "Add" button to add a repository. If this repository does not exist, it will be created.
   </div>
   <script src="options.js"></script>
 </body>
