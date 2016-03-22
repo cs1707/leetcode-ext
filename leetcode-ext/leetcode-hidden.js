@@ -5,9 +5,9 @@
 (function(){
     var path = window.location.pathname;
     chrome.storage.sync.get({
-        hide: true
+        ac_difficulty: 'show'
     }, function(items) {
-        if (items.hide) {
+        if (items.ac_difficulty == "hide") {
             if (path.match(new RegExp('^\/problemset'))) {
                 page_problemset();
             } else if (path.match(new RegExp('^\/tag'))) {
@@ -28,13 +28,29 @@
 })();
 
 function page_problemset() {
-    $("#problemList tbody td:nth-child(4)").html("(Hidden)");
-    $("#problemList tbody td:nth-child(5)").html("(Hidden)");
+    var oncl = '$(this).parent().html($(this).parent().attr("ori_data"));return false;';
+
+    $("#problemList tbody tr").each(function() {
+        var $ac = $(this).children("td:eq(3)");
+        $ac.attr("ori_data", $ac.html());
+        $ac.html("<a href='#' onclick='" + oncl + "'>Show</a>");
+        var $difficulty = $(this).children("td:eq(4)");
+        $difficulty.attr("ori_data", $difficulty.html());
+        $difficulty.html("<a href='#' onclick='" + oncl + "'>Show</a>");
+    });
 }
 
 function page_tag() {
-    $("#question_list tbody td:nth-child(4)").html("(Hidden)");
-    $("#question_list tbody td:nth-child(5)").html("(Hidden)");
+    var oncl = '$(this).parent().html($(this).parent().attr("ori_data"));return false;';
+
+    $("#question_list tbody tr").each(function() {
+        var $ac = $(this).children("td:eq(3)");
+        $ac.attr("ori_data", $ac.html());
+        $ac.html("<a href='#' onclick='" + oncl + "'>Show</a>");
+        var $difficulty = $(this).children("td:eq(4)");
+        $difficulty.attr("ori_data", $difficulty.html());
+        $difficulty.html("<a href='#' onclick='" + oncl + "'>Show</a>");
+    });
 }
 
 function page_problem() {
