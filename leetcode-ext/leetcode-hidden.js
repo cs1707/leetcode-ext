@@ -7,6 +7,9 @@
     chrome.storage.sync.get({
         ac_difficulty: 'show'
     }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+        }
         if (items.ac_difficulty == "hide") {
             if (path.match(new RegExp('^\/problemset'))) {
                 page_problemset();

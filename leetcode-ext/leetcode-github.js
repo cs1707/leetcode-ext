@@ -30,6 +30,10 @@ var postfix = {
         user: '',
         repo_name: ''
     }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
         token = items.token;
         user = items.user;
         repo = items.repo_name;
@@ -131,6 +135,9 @@ function commit() {
     chrome.storage.sync.get({
         commit: 'any'
     }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+        }
         var filename = "";
         if ($(this).attr("id") == "commit_readme") {
             filename = "README.md";
@@ -165,6 +172,10 @@ function get_file(filename, fsucc, ferr) {
         user: '',
         repo_name: ''
     }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
         var token = items.token;
         var user = items.user;
         var repo = items.repo_name;
@@ -231,6 +242,10 @@ function update_file(filename, sha) {
         user: '',
         repo_name: ''
     }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
         var token = items.token;
         var user = items.user;
         var repo = items.repo_name;
