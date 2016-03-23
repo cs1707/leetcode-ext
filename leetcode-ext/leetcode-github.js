@@ -40,8 +40,8 @@ var postfix = {
         if (token && user) {
             add_node();
             $("#readme_button").click(restore);
-            $("#commit_readme").click(commit);
-            $("#commit_question").click(commit);
+            $("#commit_readme").click({from: "commit_readme"}, commit);
+            $("#commit_question").click({from: "commit_question"}, commit);
             $("#button1").click(function() {
                 $("#commit_status").html("");
             });
@@ -131,22 +131,32 @@ function add_node() {
 
 }
 
-function commit() {
+function commit(obj) {
     chrome.storage.sync.get({
         commit: 'any'
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
         }
+        var from = "";
+        if (typeof(obj) == 'undefined' || !obj) {
+            from = "";
+        } else if (obj.data.from == "commit_readme") {
+            from = "commit_readme";
+        } else if (obj.data.from == "commit_question") {
+            from = "commit_question";
+        } else {
+            from = "";
+        }
         var filename = "";
-        if ($(this).attr("id") == "commit_readme") {
+        if (from == "commit_readme") {
             filename = "README.md";
-        } else if ($(this).attr("id") == "commit_question") {
+        } else if (from == "commit_question") {
             filename = "Question.md";
         } else {
             var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
             if (state != "pending" && state != "judging") {
-                if (items.commit != "accepted" || (items.commit == "accepted" && state == 'accepted')) {
+                if (items.commit != "accepted" || state == 'accepted') {
                     filename = get_filename();
                 } else {
                     filename = "";
