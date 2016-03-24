@@ -3,10 +3,19 @@
  */
 
 $(function () {
-    // run code button
-    document.getElementById("button0").onclick=function(){show_time_count(this);};
-    // submit button
-    document.getElementById("button1").onclick=function(){show_time_count(this);};
+    chrome.storage.sync.get({
+        countdown: 'yes'
+    }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+        }
+        if (items.countdown !== "no") {
+            // run code button
+            document.getElementById("button0").onclick=function(){show_time_count(this);};
+            // submit button
+            document.getElementById("button1").onclick=function(){show_time_count(this);};
+        }
+    });
 });
 
 var wait_time = 10;

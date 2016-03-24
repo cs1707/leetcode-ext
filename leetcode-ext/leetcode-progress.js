@@ -5,17 +5,26 @@
 var url = "https://chrome-ext.luxiakun.com/leetcode-ext";
 
 (function() {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function ()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
-            var jsonData = JSON.parse(xmlhttp.responseText);
-            enhanced_tag(jsonData);
+    chrome.storage.sync.get({
+        progress: 'show'
+    }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
         }
-    };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
+        if (items.progress !== "hide") {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function ()
+            {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                {
+                    var jsonData = JSON.parse(xmlhttp.responseText);
+                    enhanced_tag(jsonData);
+                }
+            };
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+    });
 })();
 
 function enhanced_tag(jsonData) {

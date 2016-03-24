@@ -17,6 +17,8 @@ $(function() {
     // });
     $("input:radio[name=commit]").change(save_commit);
     $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
+    $("input:radio[name=progress]").change(save_progress);
+    $("input:radio[name=countdown]").change(save_countdown);
     $("#comment").on("input", save_comment);
 });
 
@@ -27,7 +29,9 @@ function restore_options() {
         repo_private: 0,
         commit: 'any',
         ac_difficulty: 'show',
-        comment: ''
+        comment: '',
+        progress: 'show',
+        countdown: 'yes'
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
@@ -36,18 +40,16 @@ function restore_options() {
         $("#repo_name").val(items.repo_name);
         $("input:radio[name=repo_private]")[items.repo_private].checked = true;
         $('input[name="commit"]').each(function() {
-            if (this.value == items.commit) {
-                this.checked = true;
-            } else {
-                this.checked = false;
-            }
+            this.checked = this.value == items.commit;
         });
         $('input[name="ac_difficulty"]').each(function() {
-            if (this.value == items.ac_difficulty) {
-                this.checked = true;
-            } else {
-                this.checked = false;
-            }
+            this.checked = this.value == items.ac_difficulty;
+        });
+        $('input[name="progress"]').each(function() {
+            this.checked = this.value == items.progress;
+        });
+        $('input[name="countdown"]').each(function() {
+            this.checked = this.value == items.countdown;
         });
         check_token("");
         check_repository("", false);
@@ -114,6 +116,31 @@ function save_ac_difficulty() {
     var ac = $("input:radio[name=ac_difficulty]:checked").val();
     chrome.storage.sync.set({
         ac_difficulty: ac
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+    });
+}
+
+function save_progress() {
+    var pr = $("input:radio[name=progress]:checked").val();
+    chrome.storage.sync.set({
+        progress: pr
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+    });
+}
+
+
+function save_countdown() {
+    var cd = $("input:radio[name=countdown]:checked").val();
+    chrome.storage.sync.set({
+        countdown: cd
     }, function() {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
