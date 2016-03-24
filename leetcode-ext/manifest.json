@@ -5,10 +5,11 @@
   "browser_action": {
     "default_icon": "favicon.ico",
     "default_title": "LeetCode Extension",
-    "default_popup": ""
+    "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
+    "tabs",
     "https://chrome-ext.luxiakun.com/leetcode-ext",
     "https://api.github.com/"
   ],
