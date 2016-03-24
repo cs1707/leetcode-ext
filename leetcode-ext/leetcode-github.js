@@ -3,9 +3,6 @@
  */
 
 var github_api = 'https://api.github.com';
-var token = '';
-var user = '';
-var repo = '';
 
 var postfix = {
     c: ".c",
@@ -23,25 +20,24 @@ var postfix = {
 
 (function(){
     var reg = new RegExp('submissions');
-    if (window.location.pathname.match(reg) != null)
+    if (window.location.pathname.match(reg) !== null)
         return false;
     chrome.storage.sync.get({
         token: '',
-        user: '',
-        repo_name: ''
+        user: ''
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
             return;
         }
-        token = items.token;
-        user = items.user;
-        repo = items.repo_name;
-        if (token && user) {
+        if (items.token && items.user) {
             add_node();
             $("#readme_button").click(restore);
-            $("#commit_readme").click({from: "commit_readme"}, commit);
-            $("#commit_question").click({from: "commit_question"}, commit);
+            // $("#commit_readme").click({from: "commit_readme"}, commit);
+            // $("#commit_question").click({from: "commit_question"}, commit);
+            document.getElementById("commit_readme").onclick=function(){commit("commit_readme");};
+            document.getElementById("commit_question").onclick=function(){commit("commit_question");};
+            // submit button
             $("#button1").click(function() {
                 $("#commit_status").html("");
             });
@@ -52,8 +48,21 @@ var postfix = {
                 filename = filename.substring(0, filename.lastIndexOf(".")) + ext;
                 $("#filename").val(filename);
             });
+            // result of submit
             $("#result-state").bind("DOMSubtreeModified", function() {
-                commit();
+                var state = get_state("submit");
+                if (state !== "") {
+                    chrome.storage.sync.get({
+                        commit: 'any'
+                    }, function(items) {
+                        if(chrome.runtime.lastError) {
+                            console.log(chrome.runtime.lastError.message);
+                        }
+                        if (items.commit !== "accepted" || state === 'accepted') {
+                            commit("");
+                        }
+                    });
+                }
             });
         }
     });
@@ -131,43 +140,18 @@ function add_node() {
 
 }
 
-function commit(obj) {
-    chrome.storage.sync.get({
-        commit: 'any'
-    }, function(items) {
-        if(chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
-        }
-        var from = "";
-        if (typeof(obj) == 'undefined' || !obj) {
-            from = "";
-        } else if (obj.data.from == "commit_readme") {
-            from = "commit_readme";
-        } else if (obj.data.from == "commit_question") {
-            from = "commit_question";
-        } else {
-            from = "";
-        }
-        var filename = "";
-        if (from == "commit_readme") {
-            filename = "README.md";
-        } else if (from == "commit_question") {
-            filename = "Question.md";
-        } else {
-            var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
-            if (state != "pending" && state != "judging") {
-                if (items.commit != "accepted" || state == 'accepted') {
-                    filename = get_filename();
-                } else {
-                    filename = "";
-                }
-            }
-        }
-        if (filename != "") {
-            filename = get_path() + "/" + filename;
-            get_file(filename, update_file, update_file);
-        }
-    });
+function commit(from) {
+    $("#commit_status").html("");
+    var filename = "";
+    if (from == "commit_readme") {
+        filename = "README.md";
+    } else if (from == "commit_question") {
+        filename = "Question.md";
+    } else {
+        filename = get_filename();
+    }
+    filename = get_path() + "/" + filename;
+    get_file(filename, update_file, update_file);
 }
 
 function restore() {
@@ -199,12 +183,12 @@ function get_file(filename, fsucc, ferr) {
             },
             success: function(jsonData) {
                 if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
-                var sha = jsonData['sha'];
-                var file_content = jsonData['content'];
+                var sha = jsonData.sha;
+                var file_content = jsonData.content;
                 fsucc(filename, sha, file_content);
             },
             error: function(err) {
-                if (err['status'] == 404) {
+                if (err.status == 404) {
                     if(typeof ferr === "function") {
                         ferr(filename);
                     }
@@ -303,7 +287,7 @@ function get_path() {
 function get_filename() {
     var filename;
     filename = $("#filename").val();
-    if (filename == "") {
+    if (filename === "") {
         var ext = get_extension();
         filename = "solution" + ext;
     }
@@ -316,4 +300,19 @@ function get_extension() {
         ext = ".code";
     }
     return ext;
+}
+
+function get_state(button) {
+    var state = "";
+    if (button === "submit") {
+        state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
+    } else if (button === "run") {
+        state = $("#result_state").html().replace(/(^\s*)|(\s*$)/g, "").toLocaleLowerCase();
+    } else {
+        return;
+    }
+    if (state === "" || state === "pending" || state === "judging" || state === "failed") {
+        state = "";
+    }
+    return state;
 }
