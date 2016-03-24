@@ -4,6 +4,12 @@
 
 var github_api = 'https://api.github.com';
 
+var token = "";
+var user = "";
+var repo = "";
+var commit_cond = "";
+var default_comment = "";
+
 var postfix = {
     c: ".c",
     cpp: ".cpp",
@@ -24,13 +30,22 @@ var postfix = {
         return false;
     chrome.storage.sync.get({
         token: '',
-        user: ''
+        user: '',
+        repo_name: '',
+        commit: '',
+        comment: ''
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
             return;
         }
-        if (items.token && items.user) {
+        token = items.token;
+        user = items.user;
+        repo = items.repo_name;
+        commit_cond = items.commit;
+        default_comment = items.comment;
+
+        if (token && user && repo) {
             add_node();
             $("#readme_button").click(restore);
             // $("#commit_readme").click({from: "commit_readme"}, commit);
@@ -51,19 +66,14 @@ var postfix = {
             // result of submit
             $("#result-state").bind("DOMSubtreeModified", function() {
                 var state = get_state("submit");
-                if (state !== "") {
-                    chrome.storage.sync.get({
-                        commit: 'any'
-                    }, function(items) {
-                        if(chrome.runtime.lastError) {
-                            console.log(chrome.runtime.lastError.message);
-                        }
-                        if (items.commit !== "accepted" || state === 'accepted') {
-                            commit("");
-                        }
-                    });
+                if (state !== "" && (commit_cond !== "accepted" || state === 'accepted')) {
+                    commit("");
                 }
             });
+        } else {
+            console.log("token: " + token);
+            console.log("user: " + token);
+            console.log("repo: " + token);
         }
     });
 })();
@@ -84,7 +94,7 @@ function add_node() {
                             '<td style="width:200px">' +
                                 '<input type="text" class="form-control" id="filename" placeholder="Filename"></td>' +
                             '<td style="width:75px">' +
-                                '<label for="comments">Comment</label></td>' +
+                                '<label for="code_message">Comment</label></td>' +
                             '<td>' +
                                 '<input style="width:100%" type="text" class="form-control" id="code_message" placeholder="Input the comment for git commits"></td>' +
                         '</tr>' +
@@ -118,7 +128,8 @@ function add_node() {
 
     $("code-button").after($buttons);
     $("div.action").before($div);
-    $('body').append($modal).append($code);
+    $("body").append($modal).append($code);
+    $("#code_message").val(default_comment);
 
     /* Only by this, the variable in original page can be got.
     * Even using jQuery like before can not get the variable in original page */
@@ -161,42 +172,29 @@ function restore() {
 }
 
 function get_file(filename, fsucc, ferr) {
-    chrome.storage.sync.get({
-        token: '',
-        user: '',
-        repo_name: ''
-    }, function(items) {
-        if(chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
-            return;
-        }
-        var token = items.token;
-        var user = items.user;
-        var repo = items.repo_name;
-        $.ajax({
-            url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
-            type: 'get',
-            dataType: 'json',
-            async: true,
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", "token " + token);
-            },
-            success: function(jsonData) {
-                if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
-                var sha = jsonData.sha;
-                var file_content = jsonData.content;
-                fsucc(filename, sha, file_content);
-            },
-            error: function(err) {
-                if (err.status == 404) {
-                    if(typeof ferr === "function") {
-                        ferr(filename);
-                    }
-                } else {
-                    set_status(filename.substr(path.length + 1), repo, "err");
+    $.ajax({
+        url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
+        type: 'get',
+        dataType: 'json',
+        async: true,
+        beforeSend: function(request) {
+            request.setRequestHeader("Authorization", "token " + token);
+        },
+        success: function(jsonData) {
+            if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
+            var sha = jsonData.sha;
+            var file_content = jsonData.content;
+            fsucc(filename, sha, file_content);
+        },
+        error: function(err) {
+            if (err.status == 404) {
+                if(typeof ferr === "function") {
+                    ferr(filename);
                 }
+            } else {
+                set_status(filename.substr(path.length + 1), repo, "err");
             }
-        });
+        }
     });
 }
 
@@ -214,55 +212,41 @@ function update_file(filename, sha) {
         content = $("#readme_content").val();
         message = $("#readme_message").val();
         if (message === "") {
-            message = "committed by LeetCode Extension";
+            message = default_comment;
         }
     } else if (filename == path + "/Question.md") {
         content = "# " + $(".question-title:first").children(":first").html() + "\n\n";
         content += "[Original Page](" + window.location.href + ")\n\n";
         content += toMarkdown($(".question-content:first").html());
-        message = "committed by LeetCode Extension";
+        message = default_comment;
     } else {
         content = $("#code_content").val();
         message = $("#code_message").val();
         if (message === "") {
-            message = "committed by LeetCode Extension";
+            message = default_comment;
         }
-        var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
-        message = "[" + state + "]" + message;
     }
+    message = parse_comment(message);
 
-    chrome.storage.sync.get({
-        token: '',
-        user: '',
-        repo_name: ''
-    }, function(items) {
-        if(chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
-            return;
+    $.ajax({
+        url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
+        type: 'put',
+        dataType: 'json',
+        async: true,
+        data: JSON.stringify({
+            message: message,
+            content: Base64.encode(content),
+            sha: sha
+        }),
+        beforeSend: function(request) {
+            request.setRequestHeader("Authorization", "token " + token);
+        },
+        success: function() {
+            set_status(filename.substr(path.length + 1), repo, "succ");
+        },
+        error: function() {
+            set_status(filename.substr(path.length + 1), repo, "err");
         }
-        var token = items.token;
-        var user = items.user;
-        var repo = items.repo_name;
-        $.ajax({
-            url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
-            type: 'put',
-            dataType: 'json',
-            async: true,
-            data: JSON.stringify({
-                message: message,
-                content: Base64.encode(content),
-                sha: sha
-            }),
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", "token " + token);
-            },
-            success: function() {
-                set_status(filename.substr(path.length + 1), repo, "succ");
-            },
-            error: function() {
-                set_status(filename.substr(path.length + 1), repo, "err");
-            }
-        });
     });
 }
 
@@ -315,4 +299,10 @@ function get_state(button) {
         state = "";
     }
     return state;
+}
+
+function parse_comment(comment) {
+    var title = $(".question-title:first").children(":first").html();
+    var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
+    return comment.replace(/\{title\}/g, title).replace(/\{state\}/g, state);
 }

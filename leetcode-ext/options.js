@@ -17,6 +17,7 @@ $(function() {
     // });
     $("input:radio[name=commit]").change(save_commit);
     $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
+    $("#comment").on("input", save_comment);
 });
 
 function restore_options() {
@@ -25,7 +26,8 @@ function restore_options() {
         repo_name: '',
         repo_private: 0,
         commit: 'any',
-        ac_difficulty: 'show'
+        ac_difficulty: 'show',
+        comment: ''
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
@@ -49,6 +51,12 @@ function restore_options() {
         });
         check_token("");
         check_repository("", false);
+
+        var comment = items.comment;
+        if (comment === "") {
+            comment = "[{title}][{state}]committed by LeetCode Extension";
+        }
+        $("#comment").val(comment);
     });
 }
 
@@ -110,6 +118,20 @@ function save_ac_difficulty() {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
             return;
+        }
+    });
+}
+
+function save_comment() {
+    var comment = $("#comment").val();
+    if (comment === "") {
+        comment = "[{title}][{state}]committed by LeetCode Extension";
+    }
+    chrome.storage.sync.set({
+        comment: comment
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
         }
     });
 }
