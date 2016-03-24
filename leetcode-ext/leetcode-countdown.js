@@ -3,6 +3,10 @@
  */
 
 $(function () {
+    var reg = new RegExp('submissions');
+    if (window.location.pathname.match(reg) !== null)
+        return false;
+
     chrome.storage.sync.get({
         countdown: 'yes'
     }, function(items) {
