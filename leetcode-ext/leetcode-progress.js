@@ -13,7 +13,7 @@ var url = "https://chrome-ext.luxiakun.com/leetcode-ext";
             var jsonData = JSON.parse(xmlhttp.responseText);
             enhanced_tag(jsonData);
         }
-    }
+    };
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
 })();
