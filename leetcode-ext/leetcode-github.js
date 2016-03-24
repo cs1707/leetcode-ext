@@ -169,6 +169,7 @@ function restore() {
     var filename = "README.md";
     filename = get_path() + "/" + filename;
     get_file(filename, restore_file);
+    $("#readme_message").val(default_comment);
 }
 
 function get_file(filename, fsucc, ferr) {
