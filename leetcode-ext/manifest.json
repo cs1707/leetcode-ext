@@ -11,8 +11,11 @@
   "permissions": [
     "storage",
     "tabs",
+    "identity",
     "https://chrome-ext.luxiakun.com/leetcode-ext",
-    "https://api.github.com/"
+    "https://api.github.com/",
+    "https://github.com/login/oauth/authorize",
+    "https://github.com/login/oauth/access_token"
   ],
   "options_ui": {
     "page": "options.html",

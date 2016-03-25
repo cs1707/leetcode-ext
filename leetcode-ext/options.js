@@ -20,6 +20,7 @@ $(function() {
     $("input:radio[name=progress]").change(save_progress);
     $("input:radio[name=countdown]").change(save_countdown);
     $("#comment").on("input", save_comment);
+    $("#oauth").click(oauth);
 });
 
 function restore_options() {
@@ -392,6 +393,15 @@ function get_repo(obj) {
     });
 }
 
+function oauth() {
+    token_fetcher.get_token(true, function(error, token) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+    });
+}
+
 var t;
 function set_status(content, status) {
     if (content === "") {
@@ -417,3 +427,104 @@ function set_status(content, status) {
         $obj.attr("class", "err");
     }
 }
+
+var token_fetcher = (function() {
+    var client_id = "9f615c27bfa5009a2694";
+    var client_secret = "17695ffdb8bba39d4519a6e0a10d2f9086cf7654";
+    var redirect_uri = "https://" + chrome.runtime.id + ".chromiumapp.org/leetcode-ext";
+    var reg = new RegExp(redirect_uri + '[#\?](.*)');
+    var oauth_url = "https://github.com/login/oauth/authorize?client_id=" + client_id +
+        "&scope=public_repo,repo" +
+        "&redirect_uri=" + encodeURIComponent(redirect_uri);
+
+    var access_token = null;
+
+    return {
+        get_token: function(interactive, callback) {
+            // If access_token has already been got, just return it
+            if (access_token) {
+                callback(null, access_token);
+                return;
+            }
+
+            chrome.identity.launchWebAuthFlow({
+                'url': oauth_url,
+                'interactive': interactive
+            }, function (redirect) {
+                if (chrome.runtime.lastError) {
+                    callback(new Error(chrome.runtime.lastError));
+                    return;
+                }
+                var matches = redirect.match(reg);
+                if (matches && matches.length > 1) {
+                    handle_response(parse_parameter(matches[1]));
+                } else {
+                    callback(new Error('Invalid redirect URI'));
+                }
+            });
+
+            function parse_parameter(query) {
+                var pairs = query.split(/&/);
+                var values = {};
+
+                pairs.forEach(function(pair) {
+                    var nameval = pair.split(/=/);
+                    values[nameval[0]] = nameval[1];
+                });
+
+                return values;
+            }
+
+            function handle_response(values) {
+                if (values.hasOwnProperty('access_token')) {
+                    set_access_token(values.access_token);
+                } else if (values.hasOwnProperty('code')) {
+                    exchange_code(values.code);
+                } else {
+                    callback(new Error('Neither access_token nor code avialable.'));
+                }
+            }
+
+            function set_access_token(token) {
+                access_token = token;
+                callback(null, access_token);
+            }
+
+            function exchange_code(code) {
+                console.log("exchange: " + code);
+                $.ajax({
+                    url: "https://github.com/login/oauth/access_token",
+                    type: 'post',
+                    dataType: 'json',
+                    async: true,
+                    data: JSON.stringify({
+                        client_id: client_id,
+                        client_secret: client_secret,
+                        code: code,
+                        redirect_uri: redirect_uri
+                    }),
+                    headers: {
+                        "Accept": "application/json",
+                        'content-type':'application/json'
+                    },
+                    success: function(jsonData) {
+                        if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
+                        set_access_token(jsonData.access_token);
+                        // var at = jsonData.access_token;
+                        // var scope = jsonData.scope;
+                        // console.log(jsonData);
+                        // console.log("access_token: " + at);
+                        // console.log("scope: " + scope);
+                    },
+                    error: function(err) {
+                        callback(err);
+                    }
+                });
+            }
+        },
+        remove_token: function() {
+            access_token = null;
+            return false;
+        }
+    };
+})();
