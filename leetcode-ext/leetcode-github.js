@@ -148,7 +148,6 @@ function add_node() {
             "$('#code_content').val(lxk_editor.getValue());" +
         "}";
     document.body.appendChild(script);
-
 }
 
 function commit(from) {
@@ -215,11 +214,12 @@ function update_file(filename, sha) {
         if (message === "") {
             message = default_comment;
         }
+        message = message.replace(/\{state\}/g, "");
     } else if (filename == path + "/Question.md") {
         content = "# " + $(".question-title:first").children(":first").html() + "\n\n";
         content += "[Original Page](" + window.location.href + ")\n\n";
         content += toMarkdown($(".question-content:first").html());
-        message = default_comment;
+        message = default_comment.replace(/\{state\}/g, "");
     } else {
         content = $("#code_content").val();
         message = $("#code_message").val();
