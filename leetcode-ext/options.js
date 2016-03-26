@@ -59,6 +59,7 @@ function restore_options() {
             comment = "[{title}][{state}]committed by LeetCode Extension";
         }
         $("#comment").val(comment);
+        save_comment();
     });
 }
 
