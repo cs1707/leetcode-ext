@@ -144,7 +144,6 @@ function add_node() {
         "$('#button0').click(get_code);" +
         "$('#button1').click(get_code);" +
         "function get_code() {" +
-            "" +
             "$('#code_content').val(lxk_editor.getValue());" +
         "}";
     document.body.appendChild(script);
