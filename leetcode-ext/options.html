@@ -33,6 +33,30 @@
     .err {
       color: red;
     }
+
+    .dropdown {
+      position: relative;
+    }
+    .dropdown:hover ul {
+      display: block;
+      width: 100%;
+    }
+    .dropdown ul {
+      position: absolute;
+      float: top;
+      padding: 0;
+      margin: 0;
+      background-color: white;
+      display: none;
+    }
+    .dropdown li {
+      list-style:none;
+      border: 1px solid black;
+    }
+    .dropdown li:hover {
+      background-color: cornflowerblue;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -40,7 +64,15 @@
     <div id="status"></div>
     <table>
       <tr>
-        <td class="field">GitHub Personal access token:</td>
+        <td class="field">
+          <div class="dropdown">
+            <div class="present">GitHub personal access token</div>
+            <ul class="options">
+              <!--<li>GitHub personal access token</li>-->
+              <li>Login with GitHub</li>
+            </ul>
+          </div>
+        </td>
         <td class="property"><input type="text" id="token" style="width:280px"/></td>
         <td><button id="token_save">Save</button></td>
       </tr>

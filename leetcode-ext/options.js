@@ -2,19 +2,12 @@
  * Created by binarylu on 3/18/16.
  */
 
-var github_api = 'https://api.github.com';
+var github_api = "https://api.github.com";
 
 $(function() {
     restore_options();
     $("#token_save").click(save_token);
     $("#repo_add").click(save_repo);
-    // $("#repo_name").on("input", function() {
-    //     if ($.trim($("#repo_name").val()) === "") {
-    //         $("#repo_add").attr("disabled",true);
-    //     } else {
-    //         $("#repo_add").attr("disabled",false);
-    //     }
-    // });
     $("input:radio[name=commit]").change(save_commit);
     $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
     $("input:radio[name=progress]").change(save_progress);
@@ -399,33 +392,8 @@ function oauth() {
             console.log(error);
             return;
         }
+        console.log(token);
     });
-}
-
-var t;
-function set_status(content, status) {
-    if (content === "") {
-        return false;
-    }
-    clearTimeout(t);
-    var $obj = $("#status");
-    if (status == "succ") {
-        var old = "";
-        if ($obj.attr("class") == "succ") {
-            old = $obj.html() + "<br>";
-        }
-        $obj.html(old + content);
-        $obj.attr("class", "succ");
-        $obj.show();
-        t = setTimeout(function() {
-            $obj.attr("class", "");
-            $obj.html("");
-            $obj.hide();
-        }, 5000);
-    } else {
-        $obj.html(content);
-        $obj.attr("class", "err");
-    }
 }
 
 var token_fetcher = (function() {
@@ -491,7 +459,6 @@ var token_fetcher = (function() {
             }
 
             function exchange_code(code) {
-                console.log("exchange: " + code);
                 $.ajax({
                     url: "https://github.com/login/oauth/access_token",
                     type: 'post',
@@ -522,9 +489,146 @@ var token_fetcher = (function() {
                 });
             }
         },
+        check_token: function(callback) {
+
+        },
         remove_token: function() {
             access_token = null;
             return false;
         }
     };
 })();
+
+// constructor
+function github_op(token) {
+    // private property
+    var github_api = "https://api.github.com";
+
+    // public function
+    this.get_user = function(callback) {
+        $.ajax({
+            url: github_api + '/user',
+            type: 'get',
+            dataType: 'json',
+            async: true,
+            beforeSend: function(request) {
+                request.setRequestHeader("Authorization", "token " + token);
+            },
+            success: function(jsonData) {
+                if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
+                callback(null, jsonData.login);
+            },
+            error: function(err) {
+                callback(err);
+            }
+        });
+    };
+
+    /*
+     * parameter: {repo_name: "", repo_private: ""}
+     */
+    this.create_repo = function(repo_info, callback) {
+        $.ajax({
+            url: github_api + '/user/repos',
+            type: 'post',
+            dataType: 'json',
+            async: true,
+            data: JSON.stringify({
+                name: repo_info.repo_name,
+                private: repo_info.repo_private == 1,
+                description: 'This is a leetcode repository created by LeetCode Extension',
+                homepage: 'https://chrome.google.com/webstore/detail/leetcode-extension/eomonjnamkjeclchgkdchpabkllmbofp'
+            }),
+            beforeSend: function (request) {
+                request.setRequestHeader("Authorization", "token " + token);
+            },
+            success: function (jsonData) {
+                if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
+                var name  = jsonData['name'];
+                var pri = jsonData['private'] == true ? 1 : 0;
+                var url = jsonData['html_url'];
+                var user = jsonData['owner']['login'];
+                callback(null, repo_name, pri, url, user);
+            },
+            error: function() {
+                callback(err);
+            }
+        });
+    };
+
+    /*
+     * parameter: {user: "", repo_name: ""}
+     */
+    this.check_repo = function(repo_info, callback) {
+        $.ajax({
+            url: github_api + '/repos/' + repo_info.user + '/' + repo_info.repo_name,
+            type: 'get',
+            dataType: 'json',
+            async: true,
+            beforeSend: function (request) {
+                request.setRequestHeader("Authorization", "token " + token);
+            },
+            success: function(jsonData) {
+                if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
+                var name = jsonData.name;
+                var pri = jsonData.private === true ? 1 : 0;
+                var user = jsonData.owner.login;
+                callback(null, name, pri, user);
+            },
+            error: function(err) {
+                callback(err);
+            }
+        });
+    };
+
+    /*
+     * parameter: {user: "", repo_name: "", filename: "", message: "", content: ""}
+     */
+    this.create_file = function(file_info, callback) {
+        $.ajax({
+            url: github_api + '/repos/' + file_info.user  + '/' + file_info.repo_name + '/contents/' + file_info.filename,
+            type: 'put',
+            dataType: 'json',
+            async: true,
+            data: JSON.stringify({
+                message: file_info.message,
+                content: Base64.encode(file_info.content)
+            }),
+            beforeSend: function(request) {
+                request.setRequestHeader("Authorization", "token " + token);
+            },
+            success: function() {
+                callback(null)
+            },
+            error: function(err) {
+                callback(err);
+            }
+        });
+    };
+}
+
+var t;
+function set_status(content, status) {
+    if (content === "") {
+        return false;
+    }
+    clearTimeout(t);
+    var $obj = $("#status");
+    if (status == "succ") {
+        var old = "";
+        if ($obj.attr("class") == "succ") {
+            old = $obj.html() + "<br>";
+        }
+        $obj.html(old + content);
+        $obj.attr("class", "succ");
+        $obj.show();
+        t = setTimeout(function() {
+            $obj.attr("class", "");
+            $obj.html("");
+            $obj.hide();
+        }, 5000);
+    } else {
+        $obj.html(content);
+        $obj.attr("class", "err");
+    }
+}
