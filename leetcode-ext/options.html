@@ -43,7 +43,7 @@
     }
     .dropdown ul {
       position: absolute;
-      float: top;
+      top: 0;
       padding: 0;
       margin: 0;
       background-color: white;
@@ -51,7 +51,7 @@
     }
     .dropdown li {
       list-style:none;
-      border: 1px solid black;
+      border: 0px solid black;
     }
     .dropdown li:hover {
       background-color: cornflowerblue;
@@ -66,9 +66,9 @@
       <tr>
         <td class="field">
           <div class="dropdown">
-            <div class="present">GitHub personal access token</div>
+            <div>GitHub personal access token</div>
             <ul class="options">
-              <!--<li>GitHub personal access token</li>-->
+              <li>GitHub personal access token</li>
               <li>Login with GitHub</li>
             </ul>
           </div>
