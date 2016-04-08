@@ -4,9 +4,20 @@
 
 window.onload = function() {
     var elements = document.getElementsByTagName("tr");
-    for (var i = 0; i < elements.length; ++i) {
-        elements[i].onclick=function(){
-            chrome.tabs.create({url: this.getAttribute("href")});
-        };
-    }
+    chrome.storage.sync.get({
+        user: '',
+        repo_name: ''
+    }, function(items) {
+        for (var i = 0; i < elements.length; ++i) {
+            var url = "";
+            elements[i].onclick=function(){
+                if (this.id === 'go_leetcode') {
+                    url = "https://leetcode.com/problemset/algorithms/";
+                } else if (this.id === 'go_github') {
+                    url = "https://github.com/" + items.user + "/" + items.repo_name;
+                }
+                chrome.tabs.create({url: url});
+            };
+        }
+    });
 };
