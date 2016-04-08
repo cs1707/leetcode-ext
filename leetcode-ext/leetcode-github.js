@@ -80,7 +80,7 @@ var postfix = {
 
 function add_node() {
     var $buttons = $("" +
-        "<button type='button' class='btn btn-success' id='commit_question'>Add Question</button>&nbsp;&nbsp;" +
+        "<button type='button' class='btn btn-success' id='commit_question'>Add Question</button>&nbsp;" +
         "<button type='button' class='btn btn-success' data-toggle='modal' data-target='#readme' id='readme_button'>Add 'README.md'</button>" +
         "<span style='padding-left:10px;float:center' id='commit_status'></span>");
     var $div = $('' +
@@ -135,14 +135,14 @@ function add_node() {
     * Even using jQuery like before can not get the variable in original page */
     var script = document.createElement("script");
     script.innerHTML = "var lxk_editor = {};" +
-        "(function(){" +
+        "$(function(){" +
             "$('.editor').attr('id', 'ace_editor_id');" +
             "lxk_editor = ace.edit('ace_editor_id');" +
             "get_code();" +
-        "})();" +
-        "$('select[name=lang]').change(get_code);" +
-        "$('#button0').click(get_code);" +
-        "$('#button1').click(get_code);" +
+            "$('select[name=lang]').change(get_code);" +
+            "$('#button0').click(get_code);" +
+            "$('#button1').click(get_code);" +
+        "});" +
         "function get_code() {" +
             "$('#code_content').val(lxk_editor.getValue());" +
         "}";
