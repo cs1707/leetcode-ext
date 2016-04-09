@@ -4,6 +4,7 @@
   <title>Leetcode extension options</title>
   <script type="text/javascript" src="../lib/jquery.js"></script>
   <script type="text/javascript" src="../lib/webtoolkit.base64.js"></script>
+  <script type="text/javascript" src="../lib/github_api.js"></script>
   <link rel="stylesheet" href="auth-buttons.css">
   <style type="text/css">
     body {
@@ -53,15 +54,18 @@
     <div id="status"></div>
     <table class="github">
       <tr>
-        <td class="field">Sign in:</td>
-        <td class="property" colspan="2"><a class="btn-auth btn-github" href="#" id="login">Sign in with <b>github</b></a></td>
+        <td class="field">Log in:</td>
+        <td class="property" colspan="2">
+          <div id="login_prompt"><a class="btn-auth btn-github" href="#" id="login">Log in with <b>github</b></a></div>
+          <div id="logout_prompt" style="display:none">Welcome <b id="username"></b>, <a id="logout" href="#">Log out</a></div>
+        </td>
       </tr>
-      <tr>
+      <tr id="repository_row" style="display:none">
         <td class="field">Repository:</td>
         <td class="property">
           <input type="text" id="repo_name"/>&nbsp;&nbsp;
-          <input type="radio" name="repo_private" value="0" checked="checked"/>public
-          <input type="radio" name="repo_private" value="1" />private
+          <input type="radio" name="repo_private" value="0" checked="checked"/><span id="r_pub">public</span>
+          <input type="radio" name="repo_private" value="1" /><span id="r_pri">private</span>
         </td>
         <td class="property">
           <button id="repo_add">Add</button>
@@ -109,9 +113,6 @@
     - Click "Add" button to add a repository. If this repository does not exist, it will be created. Note: Input the repository name, not the URL.<br />
     - If you don't provide a comment when commit to GitHub, the default commit comment will be used. Variables: {title} means the question name, {state} means the result of your code, it may be "Accepted", "Compile Error", etc.
   </div>
-  <div>
-    <a id="oauth">GitHub</a>
-  </div>
-  <script src="options.js"></script>
+  <script src="./options.js"></script>
 </body>
 </html>
