@@ -2,8 +2,6 @@
  * Created by binarylu on 3/18/16.
  */
 
-var github_api = "https://api.github.com";
-
 var github_op = new github_op();
 
 $(function() {
@@ -75,7 +73,8 @@ function logout() {
         oauth_token: "",
         user: ""
     });
-    check_token("logout");
+    token_fetcher.logout();
+    cb_check_token("logout");
     clear_status();
 }
 
@@ -234,45 +233,6 @@ function add_readme() {
     github_op.commit_file({filename: filename, message: message, content: content, sha: null}, cb_commit_file);
 }
 
-
-// function save_token() {
-//     var token = $.trim($("#token").val());
-//     if (token === "") {
-//         chrome.storage.sync.set({
-//             token: "",
-//             user: ""
-//         }, function() {
-//             if(chrome.runtime.lastError) {
-//                 console.log(chrome.runtime.lastError.message);
-//                 return;
-//             }
-//             $("#repo_add").attr("disabled", true);
-//             set_status("Token is cleared.", "succ");
-//         });
-//     } else {
-//         check_token("Token works");
-//     }
-// }
-
-// function save_repo() {
-//     var repo_name = $.trim($("#repo_name").val()).replace(/ /g, '-');
-//     if (repo_name === "") {
-//         chrome.storage.sync.set({
-//             repo_name: "",
-//             repo_private: 0
-//         }, function() {
-//             if(chrome.runtime.lastError) {
-//                 console.log(chrome.runtime.lastError.message);
-//                 return;
-//             }
-//             set_status("Repository is cleared. Repository will neither be created nor be deleted.", "succ");
-//         });
-//     } else {
-//         var tip = 'Add repository "' + repo_name + '" successfully.';
-//         check_repository(tip, true);
-//     }
-// }
-
 function save_commit() {
     var ci = $("input:radio[name=commit]:checked").val();
     chrome.storage.sync.set({
@@ -333,235 +293,6 @@ function save_comment() {
     });
 }
 
-// function check_token(tips) {
-//     if (!tips) {
-//         tips = "";
-//     }
-//     var token = $.trim($("#token").val());
-//     if (token === "") {
-//         chrome.storage.sync.set({
-//             token: "",
-//             user: ""
-//         });
-//         $("#repo_add").attr("disabled",true);
-//     } else {
-//         get_user(token, function (jsonData) {
-//             if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
-//             var user = jsonData.login;
-//             chrome.storage.sync.set({
-//                 token: token,
-//                 user: user
-//             }, function () {
-//                 if(chrome.runtime.lastError) {
-//                     console.log(chrome.runtime.lastError.message);
-//                     return;
-//                 }
-//                 $("#repo_add").attr("disabled",false);
-//                 set_status(tips, "succ");
-//             });
-//         });
-//     }
-// }
-
-// function check_repository(tips, do_create) {
-//     if (!tips) {
-//         tips = "";
-//     }
-//     var repo_name = $.trim($("#repo_name").val()).replace(/ /g, '-');
-//     if (repo_name === "") {
-//         chrome.storage.sync.set({
-//             repo_name: ""
-//         });
-//     } else  {
-//         get_repo({
-//             repo_name: repo_name,
-//             success: function(name, pri, user) {
-//                 chrome.storage.sync.set({
-//                     repo_name: name,
-//                     repo_private: pri,
-//                     user: user
-//                 }, function () {
-//                     if(chrome.runtime.lastError) {
-//                         console.log(chrome.runtime.lastError.message);
-//                         return;
-//                     }
-//                     $("#repo_name").val(name);
-//                     $("input:radio[name=repo_private]")[pri].checked = true;
-//                     set_status(tips, "succ");
-//                 });
-//             },
-//             error: function(err) {
-//                 if (do_create) {
-//                     if (err['status'] == 404) {
-//                         create_repo();
-//                     } else {
-//                         set_status('Failed to add reporitory "' + repo_name + '".', "err");
-//                     }
-//                 } else {
-//                     set_status('Repository "' + repo_name + '" is not available.', "err");
-//                 }
-//             }
-//         });
-//     }
-// }
-
-// function create_repo() {
-//     chrome.storage.sync.get({
-//         oauth_token: '',
-//         user: ''
-//     }, function(items) {
-//         if(chrome.runtime.lastError) {
-//             console.log(chrome.runtime.lastError.message);
-//             return;
-//         }
-//         var token = items.token;
-//         var user = items.user;
-//         var repo_name = $.trim($("#repo_name").val()).replace(/ /g, '-');
-//         var repo_private = $("input:radio[name=repo_private]:checked").val();
-//         $.ajax({
-//             url: github_api + '/user/repos',
-//             type: 'post',
-//             dataType: 'json',
-//             async: true,
-//             data: JSON.stringify({
-//                 name: repo_name,
-//                 private: repo_private == 1,
-//                 description: 'This is a leetcode repository created by LeetCode Extension',
-//                 homepage: 'https://chrome.google.com/webstore/detail/leetcode-extension/eomonjnamkjeclchgkdchpabkllmbofp'
-//             }),
-//             beforeSend: function (request) {
-//                 request.setRequestHeader("Authorization", "token " + token);
-//             },
-//             success: function (jsonData) {
-//                 if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
-//                 var name  = jsonData['name'];
-//                 var pri = jsonData['private'] == true ? 1 : 0;
-//                 var url = jsonData['html_url'];
-//                 var user = jsonData['owner']['login'];
-//                 chrome.storage.sync.set({
-//                     repo_name: name,
-//                     repo_private: pri,
-//                     user: user
-//                 }, function() {
-//                     if(chrome.runtime.lastError) {
-//                         console.log(chrome.runtime.lastError.message);
-//                         return;
-//                     }
-//                     $("#repo_name").val(name);
-//                     $("input:radio[name=repo_private]")[pri].checked = true;
-//                     var content = pri == 1 ? 'Private' : 'Public';
-//                     content += ' repository "' + name + '" has been created. URL: ';
-//                     content += '<a href="' + url + '">' + url + '</a>';
-//                     set_status(content, "succ");
-//                     setTimeout(create_file(), 2000);
-//                 });
-//             },
-//             error: function() {
-//                 var content = "Failed to create repository! Make sure the token is correct and there is no repository with the same name.";
-//                 set_status(content, "err");
-//             }
-//         });
-//     });
-// }
-
-// function create_file() {
-//     var filename = "README.md";
-//     var content = "This is a repository created by [LeetCode Extension](https://chrome.google.com/webstore/detail/leetcode-extension/eomonjnamkjeclchgkdchpabkllmbofp). Codes here are commited from leetcode.com.";
-//     var message = "Initialized by LeetCode Extension";
-//     chrome.storage.sync.get({
-//         oauth_token: '',
-//         user: '',
-//         repo_name: ''
-//     }, function(items) {
-//         if(chrome.runtime.lastError) {
-//             console.log(chrome.runtime.lastError.message);
-//             return;
-//         }
-//         var token = items.token;
-//         var user = items.user;
-//         var repo = items.repo_name;
-//         $.ajax({
-//             url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
-//             type: 'put',
-//             dataType: 'json',
-//             async: true,
-//             data: JSON.stringify({
-//                 message: message,
-//                 content: Base64.encode(content)
-//             }),
-//             beforeSend: function(request) {
-//                 request.setRequestHeader("Authorization", "token " + token);
-//             },
-//             success: function() {
-//                 set_status("Create README.md successfully.", "succ");
-//             },
-//             error: function() {
-//                 set_status("Failed to create README.md", "err");
-//             }
-//         });
-//     });
-// }
-
-// function get_user(token, callback) {
-//     $.ajax({
-//         url: github_api + '/user',
-//         type: 'get',
-//         dataType: 'json',
-//         async: true,
-//         beforeSend: function(request) {
-//             request.setRequestHeader("Authorization", "token " + token);
-//         },
-//         success: callback,
-//         error: function() {
-//             chrome.storage.sync.set({
-//                 user: ""
-//             });
-//             $("#repo_add").attr("disabled",true);
-//             set_status("Failed to get user, wrong token.", "err");
-//         }
-//     });
-// }
-
-// function get_repo(obj) {
-//     if (typeof(obj)=='undefined' || !obj) obj = {};
-//     var repo_name = obj.repo_name;
-//     var fsucc = obj.success;
-//     var ferr = obj.error;
-//
-//     chrome.storage.sync.get({
-//         oauth_token: '',
-//         user: ''
-//     }, function(items) {
-//         if(chrome.runtime.lastError) {
-//             console.log(chrome.runtime.lastError.message);
-//             return;
-//         }
-//         var token = items.token;
-//         var user = items.user;
-//         $.ajax({
-//             url: github_api + '/repos/' + user + '/' + repo_name,
-//             type: 'get',
-//             dataType: 'json',
-//             async: true,
-//             beforeSend: function (request) {
-//                 request.setRequestHeader("Authorization", "token " + token);
-//             },
-//             success: function(jsonData) {
-//                 if (typeof(jsonData)=='undefined' || !jsonData) jsonData = {};
-//                 var name = jsonData.name;
-//                 var pri = jsonData.private === true ? 1 : 0;
-//                 var user = jsonData['owner']['login'];
-//                 fsucc(name, pri, user);
-//             },
-//             error: function(err) {
-//                 if(typeof ferr === "function") {
-//                     ferr(err);
-//                 }
-//             }
-//         });
-//     });
-// }
-
 var token_fetcher = (function() {
     var client_id = "9f615c27bfa5009a2694";
     var client_secret = "17695ffdb8bba39d4519a6e0a10d2f9086cf7654";
@@ -576,6 +307,7 @@ var token_fetcher = (function() {
     return {
         get_token: function(interactive, callback) {
             // If access_token has already been got, just return it
+            //console.log("get_token");
             if (access_token) {
                 callback(null, access_token);
                 return;
@@ -610,6 +342,7 @@ var token_fetcher = (function() {
             }
 
             function handle_response(values) {
+                //console.log("handle_response");
                 if (values.hasOwnProperty('access_token')) {
                     set_access_token(values.access_token);
                 } else if (values.hasOwnProperty('code')) {
@@ -620,11 +353,13 @@ var token_fetcher = (function() {
             }
 
             function set_access_token(token) {
+                //console.log("set_access_token");
                 access_token = token;
                 callback(null, access_token);
             }
 
             function exchange_code(code) {
+                //console.log("exchange_code");
                 $.ajax({
                     url: "https://github.com/login/oauth/access_token",
                     type: 'post',
@@ -654,6 +389,24 @@ var token_fetcher = (function() {
                     }
                 });
             }
+        },
+        logout: function() {
+            $.ajax({
+                url: "https://api.github.com/applications/" + client_id + "/tokens/" + access_token,
+                type: 'delete',
+                dataType: 'json',
+                async: true,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader ("Authorization", "Basic " + btoa(client_id + ":" + client_secret));
+                },
+                success: function() {
+                    access_token = null;
+                },
+                error: function(err) {
+                    console.log("Failed to logout");
+                    console.log(err);
+                }
+            });
         },
         check_token: function(callback) {
 
