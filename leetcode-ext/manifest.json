@@ -21,19 +21,19 @@
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problemset/algorithms/"],
-      "js": ["leetcode-progress.js"]
+      "js": ["lib/jquery.js", "lib/highcharts.js", "leetcode-progress.js"]
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "js": ["jquery.js", "webtoolkit.base64.js", "to-markdown.js", "leetcode-github.js"]
+      "js": ["lib/jquery.js", "lib/webtoolkit.base64.js", "lib/to-markdown.js", "leetcode-github.js"]
     },
     {
       "matches": ["https://leetcode.com/*"],
-      "js": ["jquery.js", "leetcode-hidden.js"]
+      "js": ["lib/jquery.js", "leetcode-hidden.js"]
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "js": ["jquery.js", "leetcode-countdown.js"]
+      "js": ["lib/jquery.js", "leetcode-countdown.js"]
     }
   ],
   "manifest_version": 2
