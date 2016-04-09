@@ -196,6 +196,9 @@ function init_chart() {
         },
         {
             name: 'Solved'
-        }]
+        }],
+        credits: {
+            enabled: false
+        }
     });
 }
