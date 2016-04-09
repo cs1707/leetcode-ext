@@ -1,12 +1,20 @@
 {
   "name": "LeetCode Extension",
   "short_name": "leetcode-ext",
-  "version": "0.4.3",
+  "version": "0.5.1",
   "description": "LeetCode.com Extension: Commit your code to Github, show your progress, hide difficulty and countdown for submit button",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "browser_action": {
-    "default_icon": "favicon.ico",
+    "default_icon": {
+      "19": "icons/icon19.png",
+      "38": "icons/icon38.png"
+    },
     "default_title": "LeetCode Extension",
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
   "permissions": [
     "storage",
@@ -18,25 +26,25 @@
     "https://github.com/login/oauth/access_token"
   ],
   "options_ui": {
-    "page": "options.html",
+    "page": "options/options.html",
     "chrome_style": true
   },
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problemset/algorithms/"],
-      "js": ["leetcode-progress.js"]
+      "js": ["lib/jquery.js", "lib/highcharts.js", "leetcode-progress.js"]
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "js": ["jquery.js", "webtoolkit.base64.js", "to-markdown.js", "leetcode-github.js"]
+      "js": ["lib/jquery.js", "lib/webtoolkit.base64.js", "lib/to-markdown.js", "leetcode-github.js"]
     },
     {
       "matches": ["https://leetcode.com/*"],
-      "js": ["jquery.js", "leetcode-hidden.js"]
+      "js": ["lib/jquery.js", "leetcode-hidden.js"]
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "js": ["jquery.js", "leetcode-countdown.js"]
+      "js": ["lib/jquery.js", "leetcode-countdown.js"]
     }
   ],
   "manifest_version": 2
