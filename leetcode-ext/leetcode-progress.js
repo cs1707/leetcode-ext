@@ -4,42 +4,105 @@
 
 var url = "https://chrome-ext.luxiakun.com/leetcode-ext";
 
+var lxk_chart = {};
+var tag_data = {};
+
 $(function() {
     chrome.storage.sync.get({
-        progress: 'show'
+        progress: 'show',
+        hide_locked: 0
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
         }
-        add_chart();
+        add_check();
+        $("#hide_locked").prop("checked", items.hide_locked === 0 ? false : true);
         if (items.progress !== "hide") {
+            add_chart();
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function ()
             {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
                 {
-                    var jsonData = JSON.parse(xmlhttp.responseText);
-                    enhanced_tag(jsonData);
+                    lxk_chart = init_chart();
+
+                    tag_data = JSON.parse(xmlhttp.responseText);
+                    update_statistic(tag_data);
                 }
             };
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
+        } else {
+            update_statistic(tag_data);
         }
     });
 });
 
-function enhanced_tag(jsonData) {
-    var taglist = {};
+function add_check() {
+    var $check = '<div class="row col-md-4"><div class="checkbox" style="margin: 5px 15px">' +
+        '<label>' +
+            '<input type="checkbox" id="hide_locked" checked="false"> Hide locked problems' +
+        '</label>' +
+    '</div></div>';
+    $(".blog-main .row:nth-child(2)").after($check);
+    $("#hide_locked").click(hide_locked);
+}
+
+function add_chart() {
+    var $chart = $('<div class="row sidebar-module">' +
+        '<ul class="col-md-offset-3 col-md-9 list-group">' +
+        '<li class="list-group-item list-group-item-warning">' +
+        '<strong>' +
+        '<span class="glyphicon glyphicon-plane"></span>' +
+        '<span>&nbsp;Progress</span>' +
+        '</strong>' +
+        '</li>' +
+        '<li class="list-group-item">' +
+        '<div id="lxk_chart" style="margin: 0 auto">' +
+        '</div>' +
+        '</li>' +
+        '</ul>' +
+        '</div>');
+    $(".sidebar-module:last").after($chart);
+}
+
+function hide_locked() {
+    var hide_locked = $("#hide_locked").prop("checked") === true ? 1 : 0;
+    chrome.storage.sync.set({
+        hide_locked: hide_locked
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+        update_statistic(tag_data);
+    });
+}
+
+function update_statistic(jsonData) {
+    var tag_ac = {};
+    var tag_nac = {};
     var difficulty_ac = {};
     var difficulty_nac = {};
-    $("#problemList").children().last().children().each(function() {
-        var problem = $(this).children("td:nth-child(3)").children("a:first-child").html();
-        var ac = $(this).children("td:nth-child(1)").children("span:first-child").attr("class");
-        if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) jsonData[problem] = "unknown";
+    var hide_locked = $("#hide_locked").prop("checked") === true ? 1 : 0;
+    $("#problemList tbody tr").each(function() {
+        var problem = $(this).children("td:eq(2)").children("a:first").html();
+        var ac = $(this).children("td:eq(0)").children("span:first").attr("class");
+        var locked = $(this).children("td:eq(2)").children("i").length == 0 ? 0 : 1;
+
+        if (hide_locked === 1 && locked === 1) {
+            $(this).hide();
+            return true;
+        }
+        $(this).show();
+
+        if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
         for (var j = 0; j < jsonData[problem].length; ++j) {
             var tag = jsonData[problem][j];
-            if (typeof(taglist[tag]) == 'undefined' || !taglist[tag]) taglist[tag] = 0;
-            taglist[tag] += ac == "ac" ? 1 : 0;
+            if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;
+            if (typeof(tag_nac[tag]) == 'undefined' || !tag_nac[tag]) tag_nac[tag] = 0;
+            tag_ac[tag] += ac == "ac" ? 1 : 0;
+            tag_nac[tag] += ac == "ac" ? 0 : 1;
         }
 
         var difficulty = "";
@@ -55,43 +118,38 @@ function enhanced_tag(jsonData) {
         difficulty_nac[difficulty] += ac == "ac" ? 0 : 1;
     });
 
-    var Tag = document.getElementsByClassName("sidebar-module")[4].children[0].children;
-    for (var i = 1; i < Tag.length; ++i) {
-        var total = Tag[i].children[0].innerHTML;
-        var tag = Tag[i].children[1].innerHTML;
-        var ac = taglist[tag];
-        var percent = Math.floor(ac / total * 100);
-
-        var node = document.createElement("div");
-        var style = "position:absolute;top:0;left:0;width:" + percent + "%;height:100%;background:green;opacity:0.15;";
-        node.setAttribute("style", style);
-        Tag[i].childNodes[1].innerHTML = ac + "/" + total;
-        Tag[i].appendChild(node);
+    if ($.isEmptyObject(jsonData) != true) {
+        draw_bar(tag_ac, tag_nac);
+        draw_chart(difficulty_ac, difficulty_nac);
     }
-    draw_chart(difficulty_ac, difficulty_nac);
 }
 
-function add_chart() {
-    var $chart = $('<div class="row sidebar-module">' +
-        '<ul class="col-md-offset-3 col-md-9 list-group">' +
-            '<li class="list-group-item list-group-item-warning">' +
-                '<strong>' +
-                    '<span class="glyphicon glyphicon-plane"></span>' +
-                    '<span>&nbsp;Progress</span>' +
-                '</strong>' +
-            '</li>' +
-            '<li class="list-group-item">' +
-                '<div id="lxk_chart" style="margin: 0 auto">' +
-                '</div>' +
-            '</li>' +
-        '</ul>' +
-    '</div>');
-    $(".sidebar-module:last").after($chart);
+function draw_bar(tag_ac, tag_nac) {
+    $(".sidebar-module:eq(4)").children("ul:first").children(":gt(0)").each(function() {
+        var tag = $(this).children("small").html();
+
+        if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;
+        if (typeof(tag_nac[tag]) == 'undefined' || !tag_nac[tag]) tag_nac[tag] = 0;
+        var total = tag_ac[tag] + tag_nac[tag];
+        var ac = tag_ac[tag];
+        var percent = total == 0 ? 100 : Math.floor(ac / total * 100);
+
+        $(this).children("span").html(ac + "/" + total);
+        $(this).children("div").remove();
+        var $bar = $('<div style="position:absolute;top:0;left:0;width:' + percent + '%;height:100%;background:green;opacity:0.15;">' +
+            '</div>');
+        $(this).append($bar);
+    });
 }
 
 function draw_chart(difficulty_ac, difficulty_nac) {
+    lxk_chart.series[0].setData([difficulty_nac.Easy, difficulty_nac.Medium, difficulty_nac.Hard]);
+    lxk_chart.series[1].setData([difficulty_ac.Easy, difficulty_ac.Medium, difficulty_ac.Hard]);
+}
+
+function init_chart() {
     //$('#lxk_chart').highcharts({
-    var chart = new Highcharts.Chart({
+    return new Highcharts.Chart({
         chart: {
             type: 'column',
             renderTo: 'lxk_chart',
@@ -134,12 +192,10 @@ function draw_chart(difficulty_ac, difficulty_nac) {
             }
         },
         series: [{
-            name: 'Unsolved',
-            data: [difficulty_nac.Easy, difficulty_nac.Medium, difficulty_nac.Hard]
+            name: 'Unsolved'
         },
         {
-            name: 'Solved',
-            data: [difficulty_ac.Easy, difficulty_ac.Medium, difficulty_ac.Hard]
+            name: 'Solved'
         }]
     });
 }
