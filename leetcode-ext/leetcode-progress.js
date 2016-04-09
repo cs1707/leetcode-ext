@@ -51,7 +51,6 @@ function enhanced_tag(jsonData) {
         }
         if (typeof(difficulty_ac[difficulty]) == 'undefined' || !difficulty_ac[difficulty]) difficulty_ac[difficulty] = 0;
         if (typeof(difficulty_nac[difficulty]) == 'undefined' || !difficulty_nac[difficulty]) difficulty_nac[difficulty] = 0;
-        console.log(difficulty);
         difficulty_ac[difficulty] += ac == "ac" ? 1 : 0;
         difficulty_nac[difficulty] += ac == "ac" ? 0 : 1;
     });
@@ -69,8 +68,6 @@ function enhanced_tag(jsonData) {
         Tag[i].childNodes[1].innerHTML = ac + "/" + total;
         Tag[i].appendChild(node);
     }
-    console.log(difficulty_ac);
-    console.log(difficulty_nac);
     draw_chart(difficulty_ac, difficulty_nac);
 }
 
@@ -84,7 +81,7 @@ function add_chart() {
                 '</strong>' +
             '</li>' +
             '<li class="list-group-item">' +
-                '<div id="lxk_chart" style="margin: 0 auto">abc' +
+                '<div id="lxk_chart" style="margin: 0 auto">' +
                 '</div>' +
             '</li>' +
         '</ul>' +
@@ -97,10 +94,11 @@ function draw_chart(difficulty_ac, difficulty_nac) {
     var chart = new Highcharts.Chart({
         chart: {
             type: 'column',
-            renderTo: 'lxk_chart'
+            renderTo: 'lxk_chart',
+            height: 250
         },
         title: {
-            text: 'Your Progress'
+            text: ''
         },
         xAxis: {
             categories: ['Easy', 'Medium', 'Hard']
