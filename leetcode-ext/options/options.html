@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <title>Leetcode extension options</title>
-  <script type="text/javascript" src="./lib/jquery.js"></script>
-  <script type="text/javascript" src="./lib/webtoolkit.base64.js"></script>
+  <script type="text/javascript" src="../lib/jquery.js"></script>
+  <script type="text/javascript" src="../lib/webtoolkit.base64.js"></script>
+  <link rel="stylesheet" href="auth-buttons.css">
   <style type="text/css">
     body {
       width: 500px;
@@ -14,6 +15,9 @@
     }
     .tips {
       padding: 0 40px 0 40px
+    }
+    #repo_name {
+      width: 100px;
     }
     table tr td {
       padding: 5px;
@@ -27,6 +31,15 @@
     button {
       width: 60px;
     }
+    table.github td.field {
+      width: 150px;
+    }
+    table.options {
+      width: 100%;
+    }
+    table.options td.field {
+      width: 50%;
+    }
     .succ {
       color: green;
     }
@@ -38,11 +51,10 @@
 <body>
   <div class="content">
     <div id="status"></div>
-    <table>
+    <table class="github">
       <tr>
-        <td class="field">GitHub Personal access token:</td>
-        <td class="property"><input type="text" id="token" style="width:280px"/></td>
-        <td><button id="token_save">Save</button></td>
+        <td class="field">Sign in:</td>
+        <td class="property" colspan="2"><a class="btn-auth btn-github" href="#" id="login">Sign in with <b>github</b></a></td>
       </tr>
       <tr>
         <td class="field">Repository:</td>
@@ -57,34 +69,34 @@
       </tr>
     </table>
     <hr>
-    <table width="100%">
+    <table class="options">
       <tr>
-        <td class="field" width="50%">Only commit accepted code (GitHub):</td>
+        <td class="field">Only commit accepted code (GitHub):</td>
         <td class="property">
           <input type="radio" name="commit" value="accepted" />Yes
           <input type="radio" name="commit" value="any" checked="checked"/>No
         </td>
       </tr>
       <tr>
-        <td class="field" width="50%">Default commit comment:</td>
+        <td class="field">Default commit comment:</td>
         <td class="property"><input type="text" id="comment" style="width:80%" /></td>
       </tr>
       <tr>
-        <td class="field" width="50%">Show your progress:</td>
+        <td class="field">Show your progress:</td>
         <td class="property">
           <input type="radio" name="progress" value="show" checked="checked" />Yes
           <input type="radio" name="progress" value="hide"/>No
         </td>
       </tr>
       <tr>
-        <td class="field" width="50%">Hide acceptance and difficulty:</td>
+        <td class="field">Hide acceptance and difficulty:</td>
         <td class="property">
           <input type="radio" name="ac_difficulty" value="hide" />Yes
           <input type="radio" name="ac_difficulty" value="show" checked="checked"/>No
         </td>
       </tr>
       <tr>
-        <td class="field" width="50%">Disable submit button for 10s:</td>
+        <td class="field">Disable submit button for 10s:</td>
         <td class="property">
           <input type="radio" name="countdown" value="yes" checked="checked" />Yes
           <input type="radio" name="countdown" value="no"/>No
@@ -94,7 +106,6 @@
   </div>
   <div class="tips" style="color:gray">
     Tips: <br />
-    - You can find "Personal access tokens" in "Personal settings" of your GitHub accout profile.<br />
     - Click "Add" button to add a repository. If this repository does not exist, it will be created. Note: Input the repository name, not the URL.<br />
     - If you don't provide a comment when commit to GitHub, the default commit comment will be used. Variables: {title} means the question name, {state} means the result of your code, it may be "Accepted", "Compile Error", etc.
   </div>
