@@ -14,7 +14,7 @@
       "38": "icons/icon38.png"
     },
     "default_title": "LeetCode Extension",
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
   "permissions": [
     "storage",
@@ -23,7 +23,7 @@
     "https://api.github.com/"
   ],
   "options_ui": {
-    "page": "options.html",
+    "page": "options/options.html",
     "chrome_style": true
   },
   "content_scripts": [
