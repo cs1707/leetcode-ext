@@ -96,7 +96,11 @@ function update_statistic(jsonData) {
         }
         $(this).show();
 
-        if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
+        //if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
+        if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) {
+            console.log(problem);
+            jsonData[problem] = [];
+        }
         for (var j = 0; j < jsonData[problem].length; ++j) {
             var tag = jsonData[problem][j];
             if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;
@@ -118,9 +122,12 @@ function update_statistic(jsonData) {
         difficulty_nac[difficulty] += ac == "ac" ? 0 : 1;
     });
 
-    if ($.isEmptyObject(jsonData) != true) {
+    if ($.isEmptyObject(jsonData) !== true) {
         draw_bar(tag_ac, tag_nac);
         draw_chart(difficulty_ac, difficulty_nac);
+        var ac = difficulty_ac.Easy + difficulty_ac.Medium + difficulty_ac.Hard;
+        var nac = difficulty_nac.Easy + difficulty_nac.Medium + difficulty_nac.Hard;
+        change_summary(ac, nac);
     }
 }
 
@@ -145,6 +152,10 @@ function draw_bar(tag_ac, tag_nac) {
 function draw_chart(difficulty_ac, difficulty_nac) {
     lxk_chart.series[0].setData([difficulty_nac.Easy, difficulty_nac.Medium, difficulty_nac.Hard]);
     lxk_chart.series[1].setData([difficulty_ac.Easy, difficulty_ac.Medium, difficulty_ac.Hard]);
+}
+
+function change_summary(ac, nac) {
+    $("#brief_stats strong").html(ac + " / " + Number(ac + nac));
 }
 
 function init_chart() {
