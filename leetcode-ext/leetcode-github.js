@@ -30,6 +30,7 @@ var postfix = {
         return false;
     chrome.storage.sync.get({
         token: '',
+        oauth_token: '',
         user: '',
         repo_name: '',
         commit: '',
@@ -39,11 +40,19 @@ var postfix = {
             console.log(chrome.runtime.lastError.message);
             return;
         }
-        token = items.token;
+        token = items.oauth_token;
         user = items.user;
         repo = items.repo_name;
         commit_cond = items.commit;
         default_comment = items.comment;
+
+        if (items.token !== '' && items.oauth_token === '') {
+            var $bulletin = $("<span style='padding-left:10px;' id='bulletin'></span>");
+            $("code-button").after($bulletin);
+            var content = "LeetCode Extension does not support personal access token any more, please go to <b>option page</b> to login with OAuth.";
+            $("#bulletin").html(content);
+            $("#bulletin").css("color", "red");
+        }
 
         if (token && user && repo) {
             add_node();
