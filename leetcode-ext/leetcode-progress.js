@@ -98,7 +98,6 @@ function update_statistic(jsonData) {
 
         //if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
         if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) {
-            console.log(problem);
             jsonData[problem] = [];
         }
         for (var j = 0; j < jsonData[problem].length; ++j) {
