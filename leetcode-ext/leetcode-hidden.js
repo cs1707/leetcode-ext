@@ -5,11 +5,18 @@
 (function(){
     var path = window.location.pathname;
     chrome.storage.sync.get({
-        ac_difficulty: 'show'
+        ac_difficulty: 'show',
+        hide_locked: 0
     }, function(items) {
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
         }
+        if (path.match(new RegExp('^\/tag'))) {
+            tag_add_check();
+            $("#hide_locked").prop("checked", items.hide_locked === 0 ? false : true);
+            tag_hide_locked();
+        }
+
         if (items.ac_difficulty == "hide") {
             if (path.match(new RegExp('^\/problemset'))) {
                 page_problemset();
@@ -58,4 +65,33 @@ function page_tag() {
 
 function page_problem() {
     $("#result h4:first").after($("<h4 id='total-submit-ac'></h4>").html($(".total-submit,.total-ac")).hide());
+}
+
+function tag_add_check() {
+    var $check = '<div style="display:inline;margin-left:10px">' +
+        '<input type="checkbox" id="hide_locked">&nbsp;' +
+        '<label for="hide_locked">Hide locked problems</label>' +
+        '</div>';
+    $("label[for='tagCheck']").after($check);
+    $("#hide_locked").click(tag_hide_locked);
+}
+
+function tag_hide_locked() {
+    var hide_locked = $("#hide_locked").prop("checked") === true ? 1 : 0;
+    chrome.storage.sync.set({
+        hide_locked: hide_locked
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+        $("#question_list tbody tr").each(function() {
+            var locked = $(this).children("td:eq(2)").children("i").length === 0 ? 0 : 1;
+            if (hide_locked === 1 && locked === 1) {
+                $(this).hide();
+                return true;
+            }
+            $(this).show();
+        });
+    });
 }
