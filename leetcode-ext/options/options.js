@@ -410,10 +410,6 @@ var token_fetcher = (function() {
         },
         check_token: function(callback) {
 
-        },
-        remove_token: function() {
-            access_token = null;
-            return false;
         }
     };
 })();
