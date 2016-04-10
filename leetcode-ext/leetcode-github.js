@@ -6,6 +6,7 @@ var github_api = 'https://api.github.com';
 
 var token = "";
 var user = "";
+var _chrome_user = "";
 var repo = "";
 var commit_cond = "";
 var default_comment = "";
@@ -32,6 +33,7 @@ $(function(){
         token: '',
         oauth_token: '',
         user: '',
+        chrome_user: '',
         repo_name: '',
         commit: '',
         comment: ''
@@ -42,10 +44,12 @@ $(function(){
         }
         token = items.oauth_token;
         user = items.user;
+        _chrome_user = items.chrome_user;
         repo = items.repo_name;
         commit_cond = items.commit;
         default_comment = items.comment;
 
+        upload_problem();
         if (items.token !== '' && items.oauth_token === '') {
             var $bulletin = $("<span style='padding-left:10px;' id='bulletin'></span>");
             $("code-button").after($bulletin);
@@ -314,4 +318,29 @@ function parse_comment(comment) {
     var title = $(".question-title:first").children(":first").html();
     var state = $("#result-state").html().replace(/(^\s*)|(\s*$)/g, "");
     return comment.replace(/\{title\}/g, title).replace(/\{state\}/g, state);
+}
+
+function upload_problem() {
+    var problem = {};
+    problem.title = $(".question-title:first").children(":first").html();
+    problem.url = window.location.href;
+    problem.content = Base64.encode($(".question-content:first").html());
+    problem.difficulty = $(".total-submit:last strong").html();
+    problem.companies = [];
+    problem.tags = [];
+    $(".hidebutton:first a").each(function() {
+        problem.tags.push($(this).html());
+    });
+    var contributor = {};
+    contributor.github = user;
+    contributor.chrome = _chrome_user;
+
+    var data = {};
+    data.problem = problem;
+    data.md5 = md5(JSON.stringify(problem));
+    data.locked = false;
+    data.contributor = contributor;
+    data.version = chrome.runtime.getManifest().version;
+
+    console.log(JSON.stringify(data));
 }

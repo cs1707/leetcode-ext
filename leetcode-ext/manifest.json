@@ -36,7 +36,7 @@
     },
     {
       "matches": ["https://leetcode.com/problems/*"],
-      "js": ["lib/jquery.js", "lib/webtoolkit.base64.js", "lib/to-markdown.js", "leetcode-github.js"]
+      "js": ["lib/jquery.js", "lib/webtoolkit.base64.js", "lib/to-markdown.js", "lib/md5.min.js", "leetcode-github.js"]
     },
     {
       "matches": ["https://leetcode.com/*"],
