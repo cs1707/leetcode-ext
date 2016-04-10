@@ -2,7 +2,7 @@
  * Created by binarylu on 3/21/16.
  */
 
-(function(){
+$(function(){
     var path = window.location.pathname;
     chrome.storage.sync.get({
         ac_difficulty: 'show',
@@ -35,7 +35,7 @@
             }
         }
     });
-})();
+});
 
 function page_problemset() {
     var oncl = '$(this).parent().html($(this).parent().attr("ori_data"));return false;';

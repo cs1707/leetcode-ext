@@ -24,7 +24,7 @@ var postfix = {
     mysql: ".sql"
 };
 
-(function(){
+$(function(){
     var reg = new RegExp('submissions');
     if (window.location.pathname.match(reg) !== null)
         return false;
@@ -85,7 +85,7 @@ var postfix = {
             console.log("repo: " + token);
         }
     });
-})();
+});
 
 function add_node() {
     var $buttons = $("" +
