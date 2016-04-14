@@ -5,7 +5,6 @@
 var github_op = new github_op();
 
 $(function() {
-    save_chrome_user();
     restore_options();
     $("#login").click(oauth);
     $("#logout").click(logout);
@@ -16,14 +15,6 @@ $(function() {
     $("input:radio[name=countdown]").change(save_countdown);
     $("#comment").on("input", save_comment);
 });
-
-function save_chrome_user() {
-    chrome.identity.getProfileUserInfo(function(userinfo) {
-        chrome.storage.sync.set({
-            chrome_user: userinfo.email
-        });
-    });
-}
 
 function restore_options() {
     chrome.storage.sync.get({
