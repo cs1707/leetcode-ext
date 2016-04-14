@@ -2,7 +2,7 @@
  * Created by binarylu on 3/15/16.
  */
 
-var url = "https://chrome-ext.luxiakun.com/leetcode-ext";
+var url = "https://chrome-ext.luxiakun.com/leetcode-ext/all_problems";
 
 var lxk_chart = {};
 var tag_data = {};
@@ -98,10 +98,16 @@ function update_statistic(jsonData) {
 
         //if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
         if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) {
-            jsonData[problem] = [];
+            jsonData[problem] = {};
         }
-        for (var j = 0; j < jsonData[problem].length; ++j) {
-            var tag = jsonData[problem][j];
+
+        var tags = jsonData[problem].tags;
+        if (typeof(tags) == "undefined" || !tags) {
+            tags = [];
+        }
+
+        for (var j = 0; j < tags.length; ++j) {
+            var tag = tags[j];
             if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;
             if (typeof(tag_nac[tag]) == 'undefined' || !tag_nac[tag]) tag_nac[tag] = 0;
             tag_ac[tag] += ac == "ac" ? 1 : 0;

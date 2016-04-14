@@ -2,7 +2,7 @@
   "name": "LeetCode Extension",
   "short_name": "leetcode-ext",
   "version": "0.6.1",
-  "description": "LeetCode.com Extension: Commit your code to Github, show your progress, hide difficulty and countdown for submit button",
+  "description": "Commit your code to Github, show your progress, hide difficulty and countdown for submit buttons",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -20,7 +20,7 @@
     "storage",
     "tabs",
     "identity",
-    "https://chrome-ext.luxiakun.com/leetcode-ext",
+    "https://chrome-ext.luxiakun.com/*",
     "https://api.github.com/",
     "https://github.com/login/oauth/authorize",
     "https://github.com/login/oauth/access_token"
