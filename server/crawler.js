@@ -8,13 +8,13 @@ var moment = require("moment");
 var jquery = fs.readFileSync("./jquery.js", "utf-8");
 var md5 = require("md5");
 var https = require("https");
-//var db = require('monk')('localhost:27017/leetcode');
 
 var leetcode_url = "https://leetcode.com";
 var alg = leetcode_url + "/problemset/algorithms/";
 var tags = {};
 var problem_tags = {};
 
+console.log("-----------------------------------------------------");
 jsdom.env({
     url: alg,
     src: [jquery],
@@ -43,8 +43,6 @@ jsdom.env({
                 problem_detail = get_problem(problem_url);
             }
 
-            console.log(problem_title);
-
             var problem = {};
             problem.title = problem_title;
             problem.url = problem_url;
@@ -63,22 +61,7 @@ jsdom.env({
             data.version = "0.1";
             data.create_time = new Date();
 
-            //save_problem(data);
             upload(data);
-
-            // $.ajax({
-            //     url: "https://chrome-ext.luxiakun.com/leetcode-ext/problem",
-            //     type: 'post',
-            //     dataType: 'json',
-            //     contentType: "application/json",
-            //     async: true,
-            //     data: JSON.stringify(data),
-            //     success: function (jsonData) {
-            //     },
-            //     error: function(err) {
-            //         console.log(err);
-            //     }
-            // });
         });
         fs.writeFile("./leetcode.json", JSON.stringify(problem_tags), function(err) {
             var t = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -124,55 +107,12 @@ function upload(data) {
     var post_req = https.request(post_options, function(res) {
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
-            console.log('Response: ' + chunk);
+            console.log(data.problem.title + ': ' + chunk);
         });
     });
     post_req.write(JSON.stringify(data));
     post_req.end();
 }
-
-/*
-function save_problem(data) {
-    var title = data.problem.title;
-    var md5_string = data.md5;
-    var collection = db.get('problems');
-
-    get_md5_by_title(collection, title, function (docs) {
-        if (docs.length !== 0) {
-            if (md5_string === docs[0].md5) {
-                //logger.info('ignore: ' + title)
-                collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
-                //console.log("Problem already exists.");
-                return;
-            } else {
-                //logger.info('remove: ' + title)
-                remove_by_title(collection, title);
-            }
-        }
-        console.log("add: " + title + " By: " + data.contributor.github);
-        collection.insert(data, function(err) {
-            if (err) {
-                console.log("insert error");
-                console.log(err);
-            }
-        });
-        collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
-        //console.log("Upload problem successfully.");
-    });
-}
-
-function get_md5_by_title(collection, title, callback) {
-    collection.find({"problem.title": title}, "md5", function(e, docs) {
-        callback(docs);
-    });
-}
-
-function remove_by_title(collection, title) {
-    collection.remove({"problem.title": title}, function (err) {
-        if (err) console.log(err);
-    });
-}
-*/
 
 /**
  *
