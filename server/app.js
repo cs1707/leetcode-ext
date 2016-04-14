@@ -7,7 +7,7 @@ var app = express();
 var log4js = require('log4js');
 log4js.configure({
     appenders: [
-        {type: 'file', filename: 'logs/app.log', maxLogSize: 20480, backups: 3, category: 'info'}
+        {type: 'file', filename: 'logs/app.log', maxLogSize: 10485760, backups: 10, category: 'info'}
     ]
 });
 var logger = log4js.getLogger('info');
