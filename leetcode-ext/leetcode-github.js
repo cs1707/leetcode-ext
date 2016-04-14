@@ -33,7 +33,7 @@ $(function(){
         oauth_token: '',
         user: '',
         repo_name: '',
-        commit: '',
+        commit: ["accepted", "time limit exceeded", "compile error", "runtime error"],
         comment: ''
     }, function(items) {
         if(chrome.runtime.lastError) {
@@ -76,7 +76,7 @@ $(function(){
             // result of submit
             $("#result-state").bind("DOMSubtreeModified", function() {
                 var state = get_state("submit");
-                if (state !== "" && (commit_cond !== "accepted" || state === 'accepted')) {
+                if (state !== "" && $.inArray(state, commit_cond) != -1) {
                     commit("");
                 }
             });

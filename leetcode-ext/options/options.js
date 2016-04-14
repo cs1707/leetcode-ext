@@ -9,7 +9,7 @@ $(function() {
     $("#login").click(oauth);
     $("#logout").click(logout);
     $("#repo_add").click(save_repo);
-    $("input:radio[name=commit]").change(save_commit);
+    $("input:checkbox[name=commit]").change(save_commit);
     $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
     $("input:radio[name=progress]").change(save_progress);
     $("input:radio[name=countdown]").change(save_countdown);
@@ -21,7 +21,7 @@ function restore_options() {
         oauth_token: '',
         repo_name: '',
         repo_private: 0,
-        commit: 'any',
+        commit: [],
         ac_difficulty: 'show',
         comment: '[{title}][{state}]committed by LeetCode Extension',
         progress: 'show',
@@ -32,9 +32,15 @@ function restore_options() {
         }
         $("#repo_name").val(items.repo_name);
         $("input:radio[name=repo_private]")[items.repo_private].checked = true;
+
         $('input[name="commit"]').each(function() {
-            this.checked = this.value == items.commit;
+            if (typeof(items.commit) !== 'object') {
+                this.checked = true;
+            } else {
+                this.checked = $.inArray($(this).val(), items.commit) !== -1;
+            }
         });
+
         $('input[name="ac_difficulty"]').each(function() {
             this.checked = this.value == items.ac_difficulty;
         });
@@ -234,7 +240,11 @@ function add_readme() {
 }
 
 function save_commit() {
-    var ci = $("input:radio[name=commit]:checked").val();
+    var ci = [];
+    $('input[name="commit"]:checked').each(function(){
+        ci.push($(this).val());
+    });
+
     chrome.storage.sync.set({
         commit: ci
     }, function() {

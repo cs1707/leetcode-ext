@@ -76,10 +76,13 @@
     <hr>
     <table class="options">
       <tr>
-        <td class="field">Only commit accepted code (GitHub):</td>
+        <td class="field">(For GitHub) Only commit code of:</td>
         <td class="property">
-          <input type="radio" name="commit" value="accepted" />Yes
-          <input type="radio" name="commit" value="any" checked="checked"/>No
+          <input type="checkbox" name="commit" value="accepted" checked="checked"/>Accepted&nbsp;&nbsp;
+          <input type="checkbox" name="commit" value="time limit exceeded" checked="checked"/>Time Limit Exceeded
+          <br>
+          <input type="checkbox" name="commit" value="compile error" checked="checked"/>Compile Error&nbsp;&nbsp;
+          <input type="checkbox" name="commit" value="runtime error" checked="checked"/>Runtime Error
         </td>
       </tr>
       <tr>
