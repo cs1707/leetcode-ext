@@ -6,7 +6,6 @@ var github_api = 'https://api.github.com';
 
 var token = "";
 var user = "";
-var _chrome_user = "";
 var repo = "";
 var commit_cond = "";
 var default_comment = "";
@@ -33,7 +32,6 @@ $(function(){
         token: '',
         oauth_token: '',
         user: '',
-        chrome_user: '',
         repo_name: '',
         commit: '',
         comment: ''
@@ -44,7 +42,6 @@ $(function(){
         }
         token = items.oauth_token;
         user = items.user;
-        _chrome_user = items.chrome_user;
         repo = items.repo_name;
         commit_cond = items.commit;
         default_comment = items.comment;
@@ -322,7 +319,7 @@ function parse_comment(comment) {
 
 function upload_problem() {
     var problem = {};
-    problem.title = $(".question-title:first").children(":first").html();
+    problem.title = $(".question-title:first").children(":first").html().replace(/^\d+\. */, "");
     problem.url = window.location.href;
     problem.content = Base64.encode($(".question-content:first").html());
     problem.difficulty = $(".total-submit:last strong").html();
@@ -333,7 +330,6 @@ function upload_problem() {
     });
     var contributor = {};
     contributor.github = user;
-    contributor.chrome = _chrome_user;
 
     var data = {};
     data.problem = problem;
@@ -341,6 +337,19 @@ function upload_problem() {
     data.locked = false;
     data.contributor = contributor;
     data.version = chrome.runtime.getManifest().version;
+    data.create_time = new Date();
 
-    console.log(JSON.stringify(data));
+    $.ajax({
+        url: "https://chrome-ext.luxiakun.com/leetcode-ext/problem",
+        type: 'post',
+        contentType: "application/json",
+        dataType: 'json',
+        async: true,
+        data: JSON.stringify(data),
+        success: function (jsonData) {
+        },
+        error: function(err) {
+            console.log(err);
+        }
+    });
 }
