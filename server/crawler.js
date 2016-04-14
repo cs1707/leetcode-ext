@@ -15,6 +15,9 @@ var tags = {};
 var problem_tags = {};
 
 console.log("-----------------------------------------------------");
+var t = moment().format('YYYY-MM-DD HH:mm:ss');
+console.log("[" + t + "] Begin");
+
 jsdom.env({
     url: alg,
     src: [jquery],
@@ -27,7 +30,9 @@ jsdom.env({
             get_problem_tag(tag, link);
         });
 
-        $("#problemList tbody tr").each(function() {
+        $("#problemList tbody tr").sort(function(){
+            return Math.random()*10 > 5 ? 1 : -1;
+        }).each(function() {
             var problem_title = $(this).children("td:eq(2)").children("a:first").html();
             var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
             var locked = $(this).children("td:eq(2)").children("i").length == 0 ? false : true;
