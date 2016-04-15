@@ -334,7 +334,7 @@ function upload_problem() {
     var data = {};
     data.problem = problem;
     data.md5 = md5(JSON.stringify(problem));
-    data.locked = false;
+    //data.locked = false;
     data.contributor = contributor;
     data.version = chrome.runtime.getManifest().version;
     data.create_time = new Date();

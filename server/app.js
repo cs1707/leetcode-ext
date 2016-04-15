@@ -82,6 +82,9 @@ function save_problem(req, res) {
     var data = req.body;
     var title = data.problem.title;
     var md5_string = data.md5;
+    var locked = data.locked;
+    var category = data.category;
+
     var collection = db.get('problems');
 
     if (md5(JSON.stringify(data.problem)) !== md5_string) {
@@ -91,10 +94,22 @@ function save_problem(req, res) {
     }
 
     get_md5_by_title(collection, title, function (docs) {
+        var prop = {};
+        prop.check_time = new Date();
         if (docs.length !== 0) {
+            if (locked)
+                prop.locked = locked;
+            else if (docs[0].locked)
+                prop.locked = docs[0].locked;
+
+            if (category)
+                prop.category = category;
+            else if (docs[0].category)
+                prop.category = docs[0].category;
+
             if (md5_string === docs[0].md5) {
                 //logger.info('ignore: ' + title)
-                collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
+                collection.update({"problem.title": title}, {$set: prop});
                 res.send({"res": "Problem already exists."});
                 return;
             } else {
@@ -102,14 +117,26 @@ function save_problem(req, res) {
                 remove_by_title(collection, title);
             }
         }
+
         logger.info("add: " + title + " By: " + data.contributor.github);
+        data.check_time = prop.check_time;
+        if (locked)
+            data.locked = locked;
+        else if (prop.locked)
+            data.locked = prop.locked;
+
+        if (category)
+            data.category = category;
+        else if (prop.category)
+            data.category = prop.category;
+
         collection.insert(data, function(err) {
             if (err) {
                 console.log("insert error");
                 console.log(err);
             }
         });
-        collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
+        // collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
         res.send({"res": "Upload problem successfully."});
     });
 }

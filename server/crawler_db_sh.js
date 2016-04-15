@@ -10,25 +10,18 @@ var md5 = require("md5");
 var https = require("https");
 
 var leetcode_url = "https://leetcode.com";
-var alg = leetcode_url + "/problemset/algorithms/";
-var tags = {};
-var problem_tags = {};
+var database_url = leetcode_url + "/problemset/database/";
+var shell_url = leetcode_url + "/problemset/shell/";
 
 console.log("-----------------------------------------------------");
 var t = moment().format('YYYY-MM-DD HH:mm:ss');
 console.log("[" + t + "] Begin");
 
 jsdom.env({
-    url: alg,
+    url: database_url,
     src: [jquery],
     done: function(err, window) {
         var $ = window.$;
-        $(".sidebar-module:last a").each(function() {
-            var tag = $(this).children("small").html();
-            var link = leetcode_url + $(this).attr("href");
-            tags[tag] = "";
-            get_problem_tag(tag, link);
-        });
 
         $("#problemList tbody tr").sort(function(){
             return Math.random()*10 > 5 ? 1 : -1;
@@ -37,9 +30,6 @@ jsdom.env({
             var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
             var locked = $(this).children("td:eq(2)").children("i").length == 0 ? false : true;
             var difficulty = $(this).children("td:eq(5)").html();
-            if (typeof(problem_tags[problem_title]) == 'undefined' || !problem_tags[problem_title])
-                problem_tags[problem_title] = [];
-            var tags = problem_tags[problem_title];
 
             var problem_detail = {
                 content: ""
@@ -54,7 +44,7 @@ jsdom.env({
             problem.content = Base64.encode(problem_detail.content);
             problem.difficulty = difficulty;
             problem.companies = [];
-            problem.tags = tags;
+            problem.tags = [];
             var contributor = {};
             contributor.github = "crawler";
 
@@ -62,35 +52,64 @@ jsdom.env({
             data.problem = problem;
             data.md5 = md5(JSON.stringify(problem));
             data.locked = locked;
+            data.category = "Database";
             data.contributor = contributor;
-            data.version = "0.1";
+            data.version = "crawler:0.1";
             data.create_time = new Date();
 
             upload(data);
         });
-        fs.writeFile("./leetcode.json", JSON.stringify(problem_tags), function(err) {
-            var t = moment().format('YYYY-MM-DD HH:mm:ss');
-            if (err) {
-                return console.error("[" + t + "]" + err);
-            }
-            console.log("[" + t + "] OK");
-        });
         var t = moment().format('YYYY-MM-DD HH:mm:ss');
-        console.log("[" + t + "] Done");
+        console.log("[" + t + "] Database Done");
     }
 });
 
-function get_problem_tag(tag, link) {
-    const spawn = require('child_process').spawnSync;
-    const child = spawn("./node_modules/phantomjs-prebuilt/bin/phantomjs", ["render_tag.js", link]);
+jsdom.env({
+    url: shell_url,
+    src: [jquery],
+    done: function(err, window) {
+        var $ = window.$;
 
-    tags[tag] = JSON.parse(child.stdout);
-    for (var i = 0; i < tags[tag].length; ++i) {
-        var pro = tags[tag][i];
-        if (typeof(problem_tags[pro]) == 'undefined' || !problem_tags[pro]) problem_tags[pro] = [];
-        problem_tags[pro].push(tag);
+        $("#problemList tbody tr").sort(function(){
+            return Math.random()*10 > 5 ? 1 : -1;
+        }).each(function() {
+            var problem_title = $(this).children("td:eq(2)").children("a:first").html();
+            var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
+            var locked = $(this).children("td:eq(2)").children("i").length == 0 ? false : true;
+            var difficulty = $(this).children("td:eq(5)").html();
+
+            var problem_detail = {
+                content: ""
+            };
+            if (!locked) {
+                problem_detail = get_problem(problem_url);
+            }
+
+            var problem = {};
+            problem.title = problem_title;
+            problem.url = problem_url;
+            problem.content = Base64.encode(problem_detail.content);
+            problem.difficulty = difficulty;
+            problem.companies = [];
+            problem.tags = [];
+            var contributor = {};
+            contributor.github = "crawler";
+
+            var data = {};
+            data.problem = problem;
+            data.md5 = md5(JSON.stringify(problem));
+            data.locked = locked;
+            data.category = "Shell";
+            data.contributor = contributor;
+            data.version = "crawler:0.1";
+            data.create_time = new Date();
+
+            upload(data);
+        });
+        var t = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log("[" + t + "] Shell Done");
     }
-}
+});
 
 function get_problem(link) {
     const spawn = require('child_process').spawnSync;

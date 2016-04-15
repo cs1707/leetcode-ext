@@ -7,7 +7,7 @@ page.open(address, function(status) {
         var res = [];
         var questions = document.getElementById("question_list").children[1].getElementsByTagName("tr");
         for (var i = 0; i < questions.length; ++i) {
-            res.push(questions[i].children[2].firstChild.innerHTML);
+            res.push(questions[i].children[2].children[0].innerHTML);
         }
         return res;
     });

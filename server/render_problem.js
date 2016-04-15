@@ -5,7 +5,9 @@ var address = system.args[1];
 page.open(address, function(status) {
     var content = page.evaluate(function() {
         var res = {};
-        res.content = document.getElementsByClassName("question-content")[0].innerHTML;
+        var cont = document.getElementsByClassName("question-content")[0].innerHTML;
+        if (typeof(cont) === "undefined" || !cont) cont = "";
+        res.content = cont;
         return res;
     });
     console.log(JSON.stringify(content));
