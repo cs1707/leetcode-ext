@@ -325,7 +325,7 @@ function upload_problem() {
     problem.difficulty = $(".total-submit:last strong").html();
     problem.companies = [];
     problem.tags = [];
-    $(".hidebutton:first a").each(function() {
+    $(".hidebutton:eq(-2) a").each(function() {
         problem.tags.push($(this).html());
     });
     var contributor = {};
