@@ -21,6 +21,9 @@ $(function(){
             if (path.match(new RegExp('^\/problemset'))) {
                 page_problemset();
             } else if (path.match(new RegExp('^\/tag'))) {
+                $("#question_list thead a.btn-link").click(function() {
+                    setTimeout(page_tag, 1000);
+                });
                 page_tag();
             } else if (path.match(new RegExp('^\/problems'))) {
                 page_problem();
