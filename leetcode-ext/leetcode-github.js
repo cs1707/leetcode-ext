@@ -323,20 +323,34 @@ function upload_problem() {
     problem.url = window.location.href;
     problem.content = Base64.encode($(".question-content:first").html());
     problem.difficulty = $(".total-submit:last strong").html();
-    problem.companies = [];
-    problem.tags = [];
-    $(".hidebutton:eq(-2) a").each(function() {
-        problem.tags.push($(this).html());
-    });
+
+    var companies = [];
+    if ($("#company_tags").length > 0) {
+        $("#company_tags").next().children().each(function() {
+            companies.push($(this).html());
+        });
+    }
+
+    var tags = [];
+    if ($("#tags").length > 0) {
+        //$(".hidebutton:eq(-2) a").each(function() {
+        $("#tags").next().children().each(function () {
+            tags.push($(this).html());
+        });
+    }
+
     var contributor = {};
     contributor.github = user;
+    contributor.leetcode = $.trim($(".dropdown-toggle:last").text());
+    contributor.version = chrome.runtime.getManifest().version;
 
     var data = {};
     data.problem = problem;
     data.md5 = md5(JSON.stringify(problem));
+    data.companies = companies.sort();
+    data.tags = tags.sort();
     //data.locked = false;
     data.contributor = contributor;
-    data.version = chrome.runtime.getManifest().version;
     data.create_time = new Date();
 
     $.ajax({
