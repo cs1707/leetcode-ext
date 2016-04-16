@@ -15,7 +15,8 @@ $(function () {
         }
         if (items.countdown !== "no") {
             // run code button
-            document.getElementById("button0").onclick=function(){show_time_count(this);};
+            if (document.getElementById("button0"))
+                document.getElementById("button0").onclick=function(){show_time_count(this);};
             // submit button
             document.getElementById("button1").onclick=function(){show_time_count(this);};
         }
