@@ -84,65 +84,71 @@ function save_problem(req, res) {
     var md5_string = data.md5;
     var locked = data.locked;
     var category = data.category;
-
-    var collection = db.get('problems');
+    var companies = data.companies;
+    var tags = data.tags;
 
     if (md5(JSON.stringify(data.problem)) !== md5_string) {
-        logger.info("wrong upload: " + title + " By: " + data.contributor.github);
+        logger.info("wrong upload: " + title + " By: " + data.contributor.leetcode + "(" + data.contributor.github + ")");
         res.send("Failed to upload problem.");
         return;
     }
 
-    get_md5_by_title(collection, title, function (docs) {
-        var prop = {};
-        prop.check_time = new Date();
-        if (docs.length !== 0) {
-            if (locked)
-                prop.locked = locked;
-            else if (docs[0].locked)
-                prop.locked = docs[0].locked;
-
-            if (category)
-                prop.category = category;
-            else if (docs[0].category)
-                prop.category = docs[0].category;
-
-            if (md5_string === docs[0].md5) {
-                //logger.info('ignore: ' + title)
-                collection.update({"problem.title": title}, {$set: prop});
-                res.send({"res": "Problem already exists."});
-                return;
-            } else {
-                //logger.info('remove: ' + title)
-                remove_by_title(collection, title);
+    var collection = db.get('problems');
+    get_by_title(collection, title, function (docs) {
+        if (docs.length === 0) {
+            logger.info("add: " + title + " By: " + data.contributor.leetcode + "(" + data.contributor.github + ")");
+            data.check_time = new Date();
+            collection.insert(data, function(err) {
+                if (err) {
+                    console.log("insert error");
+                    console.log(err);
+                }
+            });
+            res.send({"res": "Add problem successfully."});
+        } else {
+            var new_info = {};
+            if (!docs[0].md5 || (data.problem.content !== "" && md5_string !== docs[0].md5)) {
+                new_info.problem = data.problem;
+                new_info.md5 = md5_string;
             }
+            if (!docs[0].locked || (locked && locked !== docs[0].locked)) {
+                new_info.locked = locked;
+            }
+            if (!docs[0].category || (category && category !== docs[0].category)) {
+                new_info.category = category;
+            }
+            if (!docs[0].companies || docs[0].companies.length === 0 || (companies && companies.length !== 0 && companies.sort().toString() !== docs[0].companies.sort().toString())) {
+                new_info.companies = companies;
+            }
+            if (!docs[0].tags || docs[0].tags.length === 0 || (tags && tags.length !== 0 && tags.sort().toString() !== docs[0].tags.sort().toString())) {
+                new_info.tags = tags;
+            }
+            var update = false;
+            if (!isEmpty(new_info)) {
+                new_info.contributor = data.contributor;
+                logger.info("Update: " + title + " By: " + data.contributor.leetcode + "(" + data.contributor.github + ")");
+                logger.info(JSON.stringify(new_info));
+                update = true;
+            }
+            new_info.check_time = new Date();
+            collection.update({"problem.title": title}, {$set: new_info});
+            if (update)
+                res.send({"res": "Update problem successfully."});
+            else
+                res.send({"res": "Problem exists."});
         }
-
-        logger.info("add: " + title + " By: " + data.contributor.github);
-        data.check_time = prop.check_time;
-        if (locked)
-            data.locked = locked;
-        else if (prop.locked)
-            data.locked = prop.locked;
-
-        if (category)
-            data.category = category;
-        else if (prop.category)
-            data.category = prop.category;
-
-        collection.insert(data, function(err) {
-            if (err) {
-                console.log("insert error");
-                console.log(err);
-            }
-        });
-        // collection.update({"problem.title": title}, {$set: {"check_time": new Date()}});
-        res.send({"res": "Upload problem successfully."});
     });
 }
 
-function get_md5_by_title(collection, title, callback) {
-    collection.find({"problem.title": title}, "md5", function(e, docs) {
+function isEmpty(obj) {
+    for (var name in obj) {
+        return false;
+    }
+    return true;
+}
+
+function get_by_title(collection, title, callback) {
+    collection.find({"problem.title": title}, function(e, docs) {
         callback(docs);
     });
 }

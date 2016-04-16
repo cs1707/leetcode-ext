@@ -29,7 +29,7 @@ jsdom.env({
             var problem_title = $(this).children("td:eq(2)").children("a:first").html();
             var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
             var locked = $(this).children("td:eq(2)").children("i").length == 0 ? false : true;
-            var difficulty = $(this).children("td:eq(5)").html();
+            var difficulty = $(this).children("td:last").html();
 
             var problem_detail = {
                 content: ""
@@ -43,18 +43,19 @@ jsdom.env({
             problem.url = problem_url;
             problem.content = Base64.encode(problem_detail.content);
             problem.difficulty = difficulty;
-            problem.companies = [];
-            problem.tags = [];
             var contributor = {};
             contributor.github = "crawler";
+            contributor.leetcode = "crawler";
+            contributor.version = "crawler:0.1";
 
             var data = {};
             data.problem = problem;
             data.md5 = md5(JSON.stringify(problem));
+            data.companies = [];
+            data.tags = [];
             data.locked = locked;
             data.category = "Database";
             data.contributor = contributor;
-            data.version = "crawler:0.1";
             data.create_time = new Date();
 
             upload(data);
@@ -76,7 +77,7 @@ jsdom.env({
             var problem_title = $(this).children("td:eq(2)").children("a:first").html();
             var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
             var locked = $(this).children("td:eq(2)").children("i").length == 0 ? false : true;
-            var difficulty = $(this).children("td:eq(5)").html();
+            var difficulty = $(this).children("td:last").html();
 
             var problem_detail = {
                 content: ""
@@ -90,18 +91,19 @@ jsdom.env({
             problem.url = problem_url;
             problem.content = Base64.encode(problem_detail.content);
             problem.difficulty = difficulty;
-            problem.companies = [];
-            problem.tags = [];
             var contributor = {};
             contributor.github = "crawler";
+            contributor.leetcode = "crawler";
+            contributor.version = "crawler:0.1";
 
             var data = {};
             data.problem = problem;
             data.md5 = md5(JSON.stringify(problem));
+            data.companies = [];
+            data.tags = [];
             data.locked = locked;
             data.category = "Shell";
             data.contributor = contributor;
-            data.version = "crawler:0.1";
             data.create_time = new Date();
 
             upload(data);

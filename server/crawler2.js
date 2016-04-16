@@ -40,7 +40,8 @@ jsdom.env({
                 var problem_title = $(this).children("td:eq(2)").children("a:first").html();
                 var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
                 var locked = $(this).children("td:eq(2)").children("i").length !== 0;
-                var difficulty = $(this).children("td:eq(5)").html();
+                var difficulty = $(this).children("td:last").html();
+
                 if (typeof(problem_tags[problem_title]) == 'undefined' || !problem_tags[problem_title])
                     problem_tags[problem_title] = [];
                 var tags = problem_tags[problem_title];
@@ -57,18 +58,19 @@ jsdom.env({
                 problem.url = problem_url;
                 problem.content = Base64.encode(problem_detail.content);
                 problem.difficulty = difficulty;
-                problem.companies = [];
-                problem.tags = tags;
                 var contributor = {};
                 contributor.github = "crawler";
+                contributor.leetcode = "crawler";
+                contributor.version = "crawler:0.1";
 
                 var data = {};
                 data.problem = problem;
                 data.md5 = md5(JSON.stringify(problem));
+                data.companies = [];
+                data.tags = tags.sort();
                 data.locked = locked;
                 data.category = "Algorithms";
                 data.contributor = contributor;
-                data.version = "crawler:0.1";
                 data.create_time = new Date();
 
                 upload(data);
