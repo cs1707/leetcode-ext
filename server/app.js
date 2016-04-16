@@ -52,11 +52,13 @@ function get_all_problems(req, res) {
         for (var i = 0; i < docs.length; ++i) {
             var p = docs[i].problem;
             var title = p.title;
-            if (typeof(p.companies) == 'undefined' || !p.companies) p.companies = [];
-            if (typeof(p.tags) == 'undefined' || !p.tags) p.tags = [];
+            var companies = docs[i].companies;
+            var tags = docs[i].tags;
+            if (typeof(companies) == 'undefined' || !companies) companies = [];
+            if (typeof(tags) == 'undefined' || !tags) tags = [];
             data[title] = {};
-            data[title].companies = p.companies;
-            data[title].tags = p.tags;
+            data[title].companies = companies;
+            data[title].tags = tags;
         }
         res.send(data);
     });
