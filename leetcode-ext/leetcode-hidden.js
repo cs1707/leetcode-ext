@@ -47,7 +47,7 @@ function page_problemset() {
         var $ac = $(this).children("td:eq(3)");
         $ac.attr("ori_data", $ac.html());
         $ac.html("<a href='#' onclick='" + oncl + "'>Show</a>");
-        var $difficulty = $(this).children("td:eq(5)");
+        var $difficulty = $(this).children("td:last");
         $difficulty.attr("ori_data", $difficulty.html());
         $difficulty.html("<a href='#' onclick='" + oncl + "'>Show</a>");
     });
