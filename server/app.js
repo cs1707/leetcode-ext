@@ -48,7 +48,7 @@ function func_leetcode(req, res) {
 function get_all_problems(req, res) {
     var collection = db.get('problems');
     var data = {};
-    collection.find({}, "problem", function(e, docs) {
+    collection.find({}, function(e, docs) {
         for (var i = 0; i < docs.length; ++i) {
             var p = docs[i].problem;
             var title = p.title;
