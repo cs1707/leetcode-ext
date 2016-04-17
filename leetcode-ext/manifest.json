@@ -1,7 +1,7 @@
 {
   "name": "LeetCode Extension",
   "short_name": "leetcode-ext",
-  "version": "0.6.6",
+  "version": "0.7.0",
   "description": "Commit your code to Github, show your progress, hide difficulty and countdown for submit buttons",
   "icons": {
     "16": "icons/icon16.png",
@@ -45,6 +45,10 @@
     {
       "matches": ["https://leetcode.com/problems/*"],
       "js": ["lib/jquery.js", "leetcode-countdown.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/problemset/algorithms/"],
+      "js": ["lib/jquery.js", "leetcode-unlock.js"]
     }
   ],
   "manifest_version": 2
