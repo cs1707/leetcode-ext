@@ -333,9 +333,15 @@ function upload_problem() {
 
     var tags = [];
     if ($("#tags").length > 0) {
-        //$(".hidebutton:eq(-2) a").each(function() {
         $("#tags").next().children().each(function () {
             tags.push($(this).html());
+        });
+    }
+
+    var similarities = [];
+    if ($("#similar").length > 0) {
+        $("#similar").next().children().each(function () {
+            similarities.push($(this).html());
         });
     }
 
@@ -349,6 +355,7 @@ function upload_problem() {
     data.md5 = md5(JSON.stringify(problem));
     data.companies = companies.sort();
     data.tags = tags.sort();
+    data.similarities = similarities.sort();
     //data.locked = false;
     data.contributor = contributor;
     data.create_time = new Date();
