@@ -90,7 +90,7 @@ function update_statistic(jsonData) {
     $("#problemList tbody tr").each(function() {
         var problem = $(this).children("td:eq(2)").children("a:first").html();
         var ac = $(this).children("td:eq(0)").children("span:first").attr("class");
-        var locked = $(this).children("td:eq(2)").children("i").length == 0 ? 0 : 1;
+        var locked = $(this).children("td:eq(2)").find("i").length == 0 ? 0 : 1;
 
         if (hide_locked === 1 && locked === 1) {
             $(this).hide();
