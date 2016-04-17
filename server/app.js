@@ -28,6 +28,7 @@ app.use('/static', express.static('public'));
 app.get('/', func_root);
 app.get('/leetcode-ext', func_leetcode);
 app.get('/leetcode-ext/all_problems', get_all_problems);
+app.get('/leetcode-ext/companies', get_companies);
 app.get('/leetcode-ext/problem/:title', get_problem);
 app.post('/leetcode-ext/problem', save_problem);
 
@@ -60,6 +61,23 @@ function get_all_problems(req, res) {
             data[title] = {};
             data[title].companies = companies;
             data[title].tags = tags;
+        }
+        res.send(data);
+    });
+}
+
+function get_companies(req, res) {
+    var collection = db.get('problems');
+    var data = {};
+    collection.find({}, function(e, docs) {
+        for (var i = 0; i < docs.length; ++i) {
+            var title = docs[i].problem.title;
+            var companies = docs[i].companies;
+            if (typeof(companies) == 'undefined' || !companies) companies = [];
+            for (var j = 0; j < companies.length; ++j) {
+                if (typeof(data[companies[j]]) == 'undefined' || !data[companies[j]]) data[companies[j]] = [];
+                data[companies[j]].push(title);
+            }
         }
         res.send(data);
     });
