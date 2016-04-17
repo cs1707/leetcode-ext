@@ -112,7 +112,7 @@ function add_node() {
                 '</div>' +
             '</form>' +
         '</div>');
-    var $modal =$('' +
+    var $modal = $('' +
         '<div class="modal fade" id="readme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">' +
             '<div class="modal-dialog" role="document">' +
                 '<div class="modal-content">' +
