@@ -80,6 +80,8 @@ function hide_locked() {
 }
 
 function update_statistic(jsonData) {
+    var company_ac = {};
+    var company_nac = {};
     var tag_ac = {};
     var tag_nac = {};
     var difficulty_ac = {};
@@ -101,11 +103,22 @@ function update_statistic(jsonData) {
             jsonData[problem] = {};
         }
 
+        var companies = jsonData[problem].companies;
+        if (typeof(companies) == "undefined" || !companies) {
+            companies = [];
+        }
+        for (var j = 0; j < companies.length; ++j) {
+            var company = companies[j];
+            if (typeof(company_ac[company]) == 'undefined' || !company_ac[company]) company_ac[company] = 0;
+            if (typeof(company_nac[company]) == 'undefined' || !company_nac[company]) company_nac[company] = 0;
+            company_ac[company] += ac == "ac" ? 1 : 0;
+            company_nac[company] += ac == "ac" ? 0 : 1;
+        }
+
         var tags = jsonData[problem].tags;
         if (typeof(tags) == "undefined" || !tags) {
             tags = [];
         }
-
         for (var j = 0; j < tags.length; ++j) {
             var tag = tags[j];
             if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;
@@ -128,7 +141,8 @@ function update_statistic(jsonData) {
     });
 
     if ($.isEmptyObject(jsonData) !== true) {
-        draw_bar(tag_ac, tag_nac);
+        draw_bar("company", company_ac, company_nac);
+        draw_bar("tag", tag_ac, tag_nac);
         draw_chart(difficulty_ac, difficulty_nac);
         var ac = difficulty_ac.Easy + difficulty_ac.Medium + difficulty_ac.Hard;
         var nac = difficulty_nac.Easy + difficulty_nac.Medium + difficulty_nac.Hard;
@@ -136,8 +150,9 @@ function update_statistic(jsonData) {
     }
 }
 
-function draw_bar(tag_ac, tag_nac) {
-    $(".sidebar-module:eq(4)").children("ul:first").children(":gt(0)").each(function() {
+function draw_bar(sidebar, tag_ac, tag_nac) {
+    var $obj = sidebar === "company" ? $(".sidebar-module:eq(3)") : $(".sidebar-module:eq(4)");
+    $obj.children("ul:first").children(":gt(0)").each(function() {
         var tag = $(this).children("small").html();
 
         if (typeof(tag_ac[tag]) == 'undefined' || !tag_ac[tag]) tag_ac[tag] = 0;

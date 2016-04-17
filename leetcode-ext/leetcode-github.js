@@ -361,6 +361,8 @@ function upload_problem() {
         async: true,
         data: JSON.stringify(data),
         success: function (jsonData) {
+            // window.open('', '_self', '');
+            // window.close();
         },
         error: function(err) {
             console.log(err);
