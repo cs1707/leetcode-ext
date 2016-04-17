@@ -11,7 +11,7 @@ $(function(){
         if(chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError.message);
         }
-        if (path.match(new RegExp('^\/tag'))) {
+        if (path.match(new RegExp('^\/tag')) || path.match(new RegExp('^\/company'))) {
             tag_add_check();
             $("#hide_locked").prop("checked", items.hide_locked === 0 ? false : true);
             tag_hide_locked();
@@ -20,9 +20,10 @@ $(function(){
         if (items.ac_difficulty == "hide") {
             if (path.match(new RegExp('^\/problemset'))) {
                 page_problemset();
-            } else if (path.match(new RegExp('^\/tag'))) {
+            } else if (path.match(new RegExp('^\/tag')) || path.match(new RegExp('^\/company'))) {
                 $("#question_list thead a.btn-link").click(function() {
                     setTimeout(page_tag, 1000);
+                    setTimeout(tag_hide_locked, 1000);
                 });
                 page_tag();
             } else if (path.match(new RegExp('^\/problems'))) {
