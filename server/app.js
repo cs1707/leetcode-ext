@@ -24,6 +24,7 @@ app.use(bodyParser.json({limit: '1mb'}));  //body-parser json format
 // parse application/json
 app.use(bodyParser.json());
 
+app.use('/static', express.static('public'));
 app.get('/', func_root);
 app.get('/leetcode-ext', func_leetcode);
 app.get('/leetcode-ext/all_problems', get_all_problems);
@@ -76,7 +77,7 @@ function get_problem(req, res) {
             data.title = title;
             data.content = "";
         }
-        res.send(data);
+        res.jsonp(data);
     });
 }
 
