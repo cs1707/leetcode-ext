@@ -289,9 +289,14 @@ var token_fetcher = (function() {
                 });
             }
         },
-        logout: function() {
+        logout: function(token) {
+            var t = "";
+            if (token && token !== "")
+                t = token;
+            else if (access_token && access_token !== "")
+                t = access_token;
             $.ajax({
-                url: "https://api.github.com/applications/" + client_id + "/tokens/" + access_token,
+                url: "https://api.github.com/applications/" + client_id + "/tokens/" + t,
                 type: 'delete',
                 dataType: 'json',
                 async: true,

@@ -75,13 +75,20 @@ function oauth() {
 }
 
 function logout() {
-    chrome.storage.sync.set({
-        oauth_token: "",
-        user: ""
+    chrome.storage.sync.get({
+        oauth_token: ''
+    }, function(items) {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+        }
+        token_fetcher.logout(items.oauth_token);
+        cb_check_token("logout:" + items.oauth_token);
+        clear_status();
+        chrome.storage.sync.set({
+            oauth_token: "",
+            user: ""
+        });
     });
-    token_fetcher.logout();
-    cb_check_token("logout");
-    clear_status();
 }
 
 function save_repo() {
