@@ -92,9 +92,11 @@ function get_problem(req, res) {
         if (doc) {
             data.title = doc.problem.title;
             data.content = doc.problem.content;
+            data.companies = doc.companies;
         } else {
             data.title = title;
             data.content = "";
+            data.companies = [];
         }
         res.jsonp(data);
     });

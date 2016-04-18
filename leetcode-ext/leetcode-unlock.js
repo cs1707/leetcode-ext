@@ -6,28 +6,36 @@ var problem_rows = {};
 var subscriber = false;
 
 $(function() {
-    add_node_problem();
-    $("#problemList tbody tr").each(function() {
-        var $td = $(this).children("td:eq(2)");
-        var problem = $td.children("a:first").html();
-        var locked = $td.children("i").length === 0 ? 0 : 1;
+    var path = window.location.pathname;
+    if (path.match(new RegExp('submissions')) !== null)
+        return false;
 
-        problem_rows[problem] = $(this).html();
+    if (path === "/problemset/algorithms/") {
+        add_node_problem();
+        $("#problemList tbody tr").each(function () {
+            var $td = $(this).children("td:eq(2)");
+            var problem = $td.children("a:first").html();
+            var locked = $td.children("i").length === 0 ? 0 : 1;
 
-        if (locked === 0) // skip if this problem is not a locked problem
-            return true;
+            problem_rows[problem] = $(this).html();
 
-        if ($td.children("i").attr("class") === "fa fa-unlock")
-            subscriber = true;
+            if (locked === 0) // skip if this problem is not a locked problem
+                return true;
 
-        $td.children("a").after(
-            $("<a class='unlock_button' href='#problem_modal' data-problem='" + problem + "' data-toggle='modal' style='margin-left:5px;color:#8ace00'></a>").html(
-                $td.children("i").removeClass().addClass("fa fa-unlock")
-            )
-        );
-    });
-    if (!subscriber) {
-        add_node_company();
+            if ($td.children("i").attr("class") === "fa fa-unlock")
+                subscriber = true;
+
+            $td.children("a").after(
+                $("<a class='unlock_button' href='#problem_modal' data-problem='" + problem + "' data-toggle='modal' style='margin-left:5px;color:#8ace00'></a>").html(
+                    $td.children("i").removeClass().addClass("fa fa-unlock")
+                )
+            );
+        });
+        if (!subscriber) {
+            add_node_company();
+        }
+    } else if (path.match(new RegExp('problems'))) {
+        add_company_button();
     }
 });
 
@@ -155,4 +163,53 @@ function add_node_company() {
         "});" +
     "});";
     document.body.appendChild(script);
+}
+
+function add_company_button() {
+    if ($("#company_tags").length === 0) {
+        var problem = $(".question-title:first").children(":first").html().replace(/^\d+\. */, "");
+        var $node = $('<div>' +
+            '<div id="company_tags" class="btn btn-xs btn-warning">Show Company Tags</div>\n' +
+            '<span class="hidebutton"></span>' +
+            '</div>');
+        if ($("#tags").length > 0) {
+            $("#tags").parent().before($node);
+        } else if ($("#similar").length > 0) {
+            $("#similar").parent().before($node);
+        } else {
+            $(".question-content:first").append($node);
+        }
+        $("#company_tags").click(function() {
+            $(this).next().fadeToggle();
+            if ($(this).html() === "Show Company Tags")
+                $(this).html("Hide Company Tags");
+            else
+                $(this).html("Show Company Tags");
+        });
+
+        $.ajax({
+            url: 'https://chrome-ext.luxiakun.com/leetcode-ext/problem/' + problem,
+            type: 'get',
+            dataType: 'json',
+            async: true,
+            success: function (jsonData) {
+                if (typeof(jsonData) == 'undefined' || !jsonData) jsonData = {};
+                var title = jsonData.title;
+                var companies = jsonData.companies;
+                if (!title || title != problem) return false;
+                var content = "";
+                if (companies && companies.length > 0) {
+                    for (var i = 0; i < companies.length; ++i) {
+                        var company = companies[i];
+                        var path = '/company/' + company.toLocaleLowerCase().replace(/ /g, '-') + '/';
+                        content += '<a class="btn btn-xs btn-primary" href="' + path + '">' + company + '</a>\n';
+                    }
+                }
+                $("#company_tags").next().html(content)
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
 }

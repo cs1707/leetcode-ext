@@ -47,7 +47,7 @@
       "js": ["lib/jquery.js", "leetcode-countdown.js"]
     },
     {
-      "matches": ["https://leetcode.com/problemset/algorithms/"],
+      "matches": ["https://leetcode.com/problemset/algorithms/", "https://leetcode.com/problems/*"],
       "js": ["lib/jquery.js", "leetcode-unlock.js"]
     }
   ],
