@@ -30,6 +30,7 @@ app.get('/leetcode-ext', func_leetcode);
 app.get('/leetcode-ext/all_problems', get_all_problems);
 app.get('/leetcode-ext/companies', get_companies);
 app.get('/leetcode-ext/problem/:title', get_problem);
+app.get('/leetcode-ext/company/:company', get_company);
 app.post('/leetcode-ext/problem', save_problem);
 
 var server = app.listen(9199, "0.0.0.0", function() {
@@ -79,7 +80,7 @@ function get_companies(req, res) {
                 data[companies[j]].push(title);
             }
         }
-        res.send(data);
+        res.jsonp(data);
     });
 }
 
@@ -99,6 +100,20 @@ function get_problem(req, res) {
     });
 }
 
+function get_company(req, res) {
+    var company = req.params.company;
+    var collection = db.get('problems');
+    var data = {};
+    data.company = company;
+    data.problems = [];
+    collection.find({"companies": company}).on('success', function(docs) {
+        for (var i = 0; i < docs.length; ++i) {
+            data.problems.push(docs[i].problem.title);
+        }
+        res.jsonp(data);
+    });
+}
+
 function save_problem(req, res) {
     var data = req.body;
     var title = data.problem.title;
@@ -107,6 +122,7 @@ function save_problem(req, res) {
     var category = data.category;
     var companies = data.companies;
     var tags = data.tags;
+    var similarities = data.similarities;
 
     if (md5(JSON.stringify(data.problem)) !== md5_string) {
         logger.info("wrong upload: " + title + " By: " + data.contributor.leetcode + "(" + data.contributor.github + ")");
@@ -128,21 +144,24 @@ function save_problem(req, res) {
             res.send({"res": "Add problem successfully."});
         } else {
             var new_info = {};
-            if (!docs[0].md5 || (data.problem.content !== "" && md5_string !== docs[0].md5)) {
+            if (data.problem.content !== "" && (!docs[0].md5 || md5_string !== docs[0].md5)) {
                 new_info.problem = data.problem;
                 new_info.md5 = md5_string;
             }
-            if (!docs[0].locked || (locked && locked !== docs[0].locked)) {
+            if (locked && (!docs[0].locked || locked !== docs[0].locked)) {
                 new_info.locked = locked;
             }
-            if (!docs[0].category || (category && category !== docs[0].category)) {
+            if (category && (!docs[0].category || category !== docs[0].category)) {
                 new_info.category = category;
             }
-            if (!docs[0].companies || docs[0].companies.length === 0 || (companies && companies.length !== 0 && companies.sort().toString() !== docs[0].companies.sort().toString())) {
+            if (companies && companies.length !== 0 && (!docs[0].companies || docs[0].companies.length === 0 || companies.sort().toString() !== docs[0].companies.sort().toString())) {
                 new_info.companies = companies;
             }
-            if (!docs[0].tags || docs[0].tags.length === 0 || (tags && tags.length !== 0 && tags.sort().toString() !== docs[0].tags.sort().toString())) {
+            if (tags && tags.length !== 0 && (!docs[0].tags || docs[0].tags.length === 0 || tags.sort().toString() !== docs[0].tags.sort().toString())) {
                 new_info.tags = tags;
+            }
+            if (similarities && similarities.length !== 0 && (!docs[0].similarities || docs[0].similarities.length === 0 || similarities.sort().toString() !== docs[0].similarities.sort().toString())) {
+                new_info.similarities = similarities;
             }
             var update = false;
             if (!isEmpty(new_info)) {
