@@ -147,8 +147,10 @@ function save_problem(req, res) {
         } else {
             var new_info = {};
             if (data.problem.content !== "" && (!docs[0].md5 || md5_string !== docs[0].md5)) {
-                new_info.problem = data.problem;
-                new_info.md5 = md5_string;
+                if (!(docs[0].companies && docs[0].companies.length !== 0 && (!companies || companies.length === 0))) {
+                    new_info.problem = data.problem;
+                    new_info.md5 = md5_string;
+                }
             }
             if (locked && (!docs[0].locked || locked !== docs[0].locked)) {
                 new_info.locked = locked;
