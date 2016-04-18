@@ -168,25 +168,6 @@ function add_node_company() {
 function add_company_button() {
     if ($("#company_tags").length === 0) {
         var problem = $(".question-title:first").children(":first").html().replace(/^\d+\. */, "");
-        var $node = $('<div>' +
-            '<div id="company_tags" class="btn btn-xs btn-warning">Show Company Tags</div>\n' +
-            '<span class="hidebutton"></span>' +
-            '</div>');
-        if ($("#tags").length > 0) {
-            $("#tags").parent().before($node);
-        } else if ($("#similar").length > 0) {
-            $("#similar").parent().before($node);
-        } else {
-            $(".question-content:first").append($node);
-        }
-        $("#company_tags").click(function() {
-            $(this).next().fadeToggle();
-            if ($(this).html() === "Show Company Tags")
-                $(this).html("Hide Company Tags");
-            else
-                $(this).html("Show Company Tags");
-        });
-
         $.ajax({
             url: 'https://chrome-ext.luxiakun.com/leetcode-ext/problem/' + problem,
             type: 'get',
@@ -197,13 +178,32 @@ function add_company_button() {
                 var title = jsonData.title;
                 var companies = jsonData.companies;
                 if (!title || title != problem) return false;
+                if (!companies || companies.length === 0) return false;
+
+                var $node = $('<div>' +
+                    '<div id="company_tags" class="btn btn-xs btn-warning">Show Company Tags</div>\n' +
+                    '<span class="hidebutton"></span>' +
+                    '</div>');
+                if ($("#tags").length > 0) {
+                    $("#tags").parent().before($node);
+                } else if ($("#similar").length > 0) {
+                    $("#similar").parent().before($node);
+                } else {
+                    $(".question-content:first").append($node);
+                }
+                $("#company_tags").click(function() {
+                    $(this).next().fadeToggle();
+                    if ($(this).html() === "Show Company Tags")
+                        $(this).html("Hide Company Tags");
+                    else
+                        $(this).html("Show Company Tags");
+                });
+
                 var content = "";
-                if (companies && companies.length > 0) {
-                    for (var i = 0; i < companies.length; ++i) {
-                        var company = companies[i];
-                        var path = '/company/' + company.toLocaleLowerCase().replace(/ /g, '-') + '/';
-                        content += '<a class="btn btn-xs btn-primary" href="' + path + '">' + company + '</a>\n';
-                    }
+                for (var i = 0; i < companies.length; ++i) {
+                    var company = companies[i];
+                    var path = '/company/' + company.toLocaleLowerCase().replace(/ /g, '-') + '/';
+                    content += '<a class="btn btn-xs btn-primary" href="' + path + '">' + company + '</a>\n';
                 }
                 $("#company_tags").next().html(content)
             },
