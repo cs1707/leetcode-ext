@@ -226,7 +226,9 @@ function cb_create_repo(err, repo_name, pri, url, user) {
         tip += ' repository "' + repo_name + '" has been created. URL: ';
         tip += '<a href="' + url + '">' + url + '</a>';
         set_status(tip, "succ");
-        setTimeout(add_readme(), 2000);
+        setTimeout(function() {
+            add_readme();
+        }, 2000);
     });
 }
 
@@ -240,10 +242,12 @@ function cb_commit_file(err) {
 }
 
 function add_readme() {
-    var filename = "README.md";
-    var content = "This is a repository created by [LeetCode Extension](https://chrome.google.com/webstore/detail/leetcode-extension/eomonjnamkjeclchgkdchpabkllmbofp). Codes here are commited from leetcode.com.";
-    var message = "Initialized by LeetCode Extension";
-    github_op.commit_file({filename: filename, message: message, content: content, sha: null}, cb_commit_file);
+    $.get("https://raw.githubusercontent.com/binarylu/leetcode-ext/master/README.md", function(data) {
+        var filename = "README.md";
+        var content = data;
+        var message = "Initialized by LeetCode Extension";
+        github_op.commit_file({filename: filename, message: message, content: content, sha: null}, cb_commit_file);
+    });
 }
 
 function save_commit() {
