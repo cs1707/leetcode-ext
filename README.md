@@ -28,11 +28,12 @@ For `1`, `2` and `5`, they can be turned on / off in extension option page.
 
 For `3`, there is checkbox in problem list page and tag page.
 
-For `4`, you can login your github account in option page by OAuth. After you login, input the repository name, not the URL. If the repository you type in does not exist, it will be created. Otherwise, just connect to the existing repository.
+For `4`, you can login your github account in option page by OAuth. After you login, input the repository name, *not the URL*.  
+If the repository you type in does not exist, it will be created. Otherwise, just connect to the existing repository.
 
-For `6`, to see the content of locked problem, click the green icon at the right of each locked problem.
-If you are not a subscriber, the linke of each company tag will be changed, there will appear a modal showing the problem list after you click the company tag.
-In problem page, the company tag button will appear even if you are not a subscriber.
+For `6`, to see the content of locked problem, click the green icon at the right of each locked problem.  
+If you are not a subscriber, the linke of each company tag will be changed, there will appear a modal showing the problem list after you click the company tag.  
+In problem page, the company tag button will appear even if you are not a subscriber.  
 
 ## 3 Acknowledge
 
