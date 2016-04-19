@@ -4,14 +4,16 @@
 
 This is an extension for chrome.
 
-`leetcode-ext` folder is the source code of chrome extension.
-
-`server` folder is the source code for crawling the problem tags from leetcode.com.
-
 [Download in chrome web store]
 (https://chrome.google.com/webstore/detail/leetcode-extension/eomonjnamkjeclchgkdchpabkllmbofp)
 
 Source Code: <https://github.com/binarylu/leetcode-ext>
+
+In source code,  
+
+`leetcode-ext` folder is the source code of chrome extension.
+
+`server` folder is the source code for crawling the problem tags from leetcode.com.
 
 ## 2 Usage
 
