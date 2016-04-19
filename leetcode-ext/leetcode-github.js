@@ -319,9 +319,13 @@ function parse_comment(comment) {
 
 function upload_problem() {
     var problem = {};
+    var $question = $(".question-content:first").clone();
+    if ($question.children("div:first").find("a:first").html() === "Subscribe")
+        $question.children("div:first").remove();
+
     problem.title = $(".question-title:first").children(":first").html().replace(/^\d+\. */, "");
     problem.url = window.location.href;
-    problem.content = Base64.encode($(".question-content:first").html());
+    problem.content = Base64.encode($.trim($question.html()));
     problem.difficulty = $(".total-submit:last strong").html();
 
     var companies = [];
