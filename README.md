@@ -28,7 +28,7 @@ For `1`, `2` and `5`, they can be turned on / off in extension option page.
 
 For `3`, there is checkbox in problem list page and tag page.
 
-For `4`, you can login your github account in option page by OAuth. After you login, input the repository name, *not the URL*.  
+For `4`, you can login your github account in option page by OAuth. After you login, input the repository name, __*not the URL*__.  
 If the repository you type in does not exist, it will be created. Otherwise, just connect to the existing repository.
 
 For `6`, to see the content of locked problem, click the green icon at the right of each locked problem.  
