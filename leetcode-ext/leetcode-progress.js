@@ -128,7 +128,7 @@ function update_statistic(jsonData) {
         }
 
         var difficulty = "";
-        var $difficulty_node = $(this).children("td:last");
+        var $difficulty_node = $(this).children("td:eq(6)");
         if (typeof($difficulty_node.attr("ori_data")) == "undefined") {
             difficulty = $difficulty_node.html();
         } else {
