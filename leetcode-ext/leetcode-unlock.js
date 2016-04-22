@@ -25,6 +25,12 @@ $(function() {
             if ($td.children("i").attr("class") === "fa fa-unlock")
                 subscriber = true;
 
+            if (!subscriber) {
+                $td.children("a:first").attr("href", "#problem_modal")
+                    .attr("data-toggle", "modal")
+                    .attr("data-problem", problem);
+            }
+
             $td.children("a").after(
                 $("<a class='unlock_button' href='#problem_modal' data-problem='" + problem + "' data-toggle='modal' style='margin-left:5px;color:#8ace00'></a>").html(
                     $td.children("i").removeClass().addClass("fa fa-unlock")
@@ -51,6 +57,7 @@ function add_node_problem() {
         '<div class="modal-body" id="problem_modal_content">' +
         '</div>' +
         '<div class="modal-footer">' +
+        '<span style="padding-left:10px;float:left">Provided by <a target="_blank" href="https://github.com/binarylu/leetcode-ext">LeetCode Extension</a></span>' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
         '</div>' +
         '</div>' +
@@ -116,6 +123,7 @@ function add_node_company() {
         '</table>' +
         '</div>' +
         '<div class="modal-footer">' +
+        '<span style="padding-left:10px;float:left">Provided by <a target="_blank" href="https://github.com/binarylu/leetcode-ext">LeetCode Extension</a></span>' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
         '</div>' +
         '</div>' +
