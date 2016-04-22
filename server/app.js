@@ -126,6 +126,11 @@ function save_problem(req, res) {
     var tags = data.tags;
     var similarities = data.similarities;
 
+    if (data.contributor.version.substr(0, 1) !== '1') {
+        res.send({"res": "out of date version"});
+        return;
+    }
+
     if (md5(JSON.stringify(data.problem)) !== md5_string) {
         logger.info("wrong upload: " + title + " By: " + data.contributor.leetcode + "(" + data.contributor.github + ")");
         res.send("Failed to upload problem.");
