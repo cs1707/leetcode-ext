@@ -320,10 +320,16 @@ function parse_comment(comment) {
 function upload_problem() {
     var problem = {};
     var $question = $(".question-content:first").clone();
-    if ($question.children("div:first").find("a:first").html() === "Subscribe")
-        $question.children("div:first").remove();
 
-    problem.title = $(".question-title:first").children(":first").html().replace(/^\d+\. */, "");
+    $question.children("div").each(function() {
+        if ($(this).find("a:first").length !== 0 && $(this).find("a:first").html() === "Subscribe") {
+            $(this).remove();
+        }
+    });
+
+    var title = $(".question-title:first").children(":first").html();
+    problem.id = title.match(/^\d+/)[0];
+    problem.title = title.replace(/^\d+\. */, "");
     problem.url = window.location.href;
     problem.content = Base64.encode($.trim($question.html()));
     problem.difficulty = $(".total-submit:last strong").html();
