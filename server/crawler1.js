@@ -37,6 +37,7 @@ jsdom.env({
                 return Math.random() * 10 > 5 ? 1 : -1;
             })
             .each(function () {
+                var problem_id = $(this).children("td:eq(1)").html();
                 var problem_title = $(this).children("td:eq(2)").children("a:first").html();
                 var problem_url = leetcode_url + $(this).children("td:eq(2)").children("a:first").attr("href");
                 var locked = $(this).children("td:eq(2)").children("i").length !== 0;
@@ -54,6 +55,7 @@ jsdom.env({
                 }
 
                 var problem = {};
+                problem.id = problem_id;
                 problem.title = problem_title;
                 problem.url = problem_url;
                 problem.content = Base64.encode(problem_detail.content);
