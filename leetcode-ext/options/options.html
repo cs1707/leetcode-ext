@@ -48,6 +48,55 @@
     .err {
       color: red;
     }
+    .tooltip {
+      position: relative;
+    }
+    .tooltip:hover>em{
+      display:inline-block;
+    }
+    .tooltip em {
+      display:none;
+      position: absolute;
+      bottom: 24px;
+      left:50%;
+      color: #fff;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      width:200px;
+      padding: 2px 4px;
+      margin-left:-120px;
+      background: #000;
+      opacity:.7;
+      text-align: left;
+    }
+    .tooltip em::before {
+      content:'';
+      position: absolute;
+      bottom: -20px;
+      left:50%;
+      width:0;
+      height:0;
+      /*triangle*/
+      border-top: 10px solid #fff;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      margin-left:-5px;
+    }
+    .tooltip em::after {
+      content:'';
+      position: absolute;
+      bottom: -19px;
+      left:50%;
+      width:0;
+      height:0;
+      /*triangle*/
+      border-top: 10px solid #000;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      margin-left:-5px;
+    }
   </style>
 </head>
 <body>
@@ -69,14 +118,23 @@
           <input type="radio" name="repo_private" value="1" /><span id="r_pri">private</span>
         </td>
         <td class="property">
-          <button id="repo_add">Add</button>
+          <div class="tooltip">
+            <button id="repo_add">Add</button>
+            <em>Tips:<br/>
+              1. Input the name, not the url.<br/>
+              2. If the repository does not exist, it will be created.
+            </em>
+          </div>
         </td>
       </tr>
     </table>
     <hr>
     <table class="options">
       <tr>
-        <td class="field">(For GitHub) Only commit code of:</td>
+        <td colspan="2">--- GitHub Options ---</td>
+      </tr>
+      <tr>
+        <td class="field">Only commit code of:</td>
         <td class="property">
           <input type="checkbox" name="commit" value="accepted" checked="checked"/>Accepted&nbsp;&nbsp;
           <input type="checkbox" name="commit" value="time limit exceeded" checked="checked"/>Time Limit Exceeded
@@ -95,6 +153,9 @@
           <input type="radio" name="auto_commit" value="question"/>Yes
           <input type="radio" name="auto_commit" value="none" checked="checked" />No
         </td>
+      </tr>
+      <tr>
+        <td colspan="2">--- General Options ---</td>
       </tr>
       <tr>
         <td class="field">Show your progress:</td>
