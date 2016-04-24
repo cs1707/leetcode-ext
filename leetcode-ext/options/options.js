@@ -25,7 +25,7 @@ function restore_options() {
         commit: [],
         ac_difficulty: 'show',
         comment: '[{title}][{state}]committed by LeetCode Extension',
-        auto_commit: 'question',
+        auto_commit: 'none',
         progress: 'show',
         countdown: 'yes'
     }, function(items) {
