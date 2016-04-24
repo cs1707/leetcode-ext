@@ -1,7 +1,7 @@
 {
   "name": "LeetCode Extension",
   "short_name": "leetcode-ext",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Commit your code to Github, show your progress, hide difficulty and countdown for submit buttons",
   "icons": {
     "16": "icons/icon16.png",
