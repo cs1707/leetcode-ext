@@ -33,6 +33,7 @@ $(function(){
         oauth_token: '',
         user: '',
         repo_name: '',
+        auto_commit: '',
         commit: ["accepted", "time limit exceeded", "compile error", "runtime error"],
         comment: ''
     }, function(items) {
@@ -43,6 +44,7 @@ $(function(){
         token = items.oauth_token;
         user = items.user;
         repo = items.repo_name;
+        var auto_commit = items.auto_commit;
         commit_cond = items.commit;
         default_comment = items.comment;
 
@@ -62,6 +64,9 @@ $(function(){
             // $("#commit_question").click({from: "commit_question"}, commit);
             document.getElementById("commit_readme").onclick=function(){commit("commit_readme");};
             document.getElementById("commit_question").onclick=function(){commit("commit_question");};
+            if (auto_commit === "question") {
+                commit("commit_question");
+            }
             // submit button
             $("#button1").click(function() {
                 $("#commit_status").html("");

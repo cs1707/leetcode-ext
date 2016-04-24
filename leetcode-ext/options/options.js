@@ -11,6 +11,7 @@ $(function() {
     $("#repo_add").click(save_repo);
     $("input:checkbox[name=commit]").change(save_commit);
     $("input:radio[name=ac_difficulty]").change(save_ac_difficulty);
+    $("input:radio[name=auto_commit]").change(save_auto_commit);
     $("input:radio[name=progress]").change(save_progress);
     $("input:radio[name=countdown]").change(save_countdown);
     $("#comment").on("input", save_comment);
@@ -24,6 +25,7 @@ function restore_options() {
         commit: [],
         ac_difficulty: 'show',
         comment: '[{title}][{state}]committed by LeetCode Extension',
+        auto_commit: 'question',
         progress: 'show',
         countdown: 'yes'
     }, function(items) {
@@ -43,6 +45,9 @@ function restore_options() {
 
         $('input[name="ac_difficulty"]').each(function() {
             this.checked = this.value == items.ac_difficulty;
+        });
+        $('input[name="auto_commit"]').each(function() {
+            this.checked = this.value == items.auto_commit;
         });
         $('input[name="progress"]').each(function() {
             this.checked = this.value == items.progress;
@@ -278,6 +283,18 @@ function save_ac_difficulty() {
     });
 }
 
+function save_auto_commit() {
+    var auto_commit = $("input:radio[name=auto_commit]:checked").val();
+    chrome.storage.sync.set({
+        auto_commit: auto_commit
+    }, function() {
+        if(chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+    });
+}
+
 function save_progress() {
     var pr = $("input:radio[name=progress]:checked").val();
     chrome.storage.sync.set({
@@ -289,7 +306,6 @@ function save_progress() {
         }
     });
 }
-
 
 function save_countdown() {
     var cd = $("input:radio[name=countdown]:checked").val();
