@@ -126,7 +126,7 @@ function save_problem(req, res) {
     var tags = data.tags;
     var similarities = data.similarities;
 
-    if (data.contributor.version !== '1.0.4') {
+    if (data.contributor.version !== '1.0.5') {
         res.send({"res": "version is out of date"});
         return;
     }
