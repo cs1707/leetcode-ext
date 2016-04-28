@@ -98,6 +98,9 @@ function update_statistic(jsonData) {
         }
         $(this).show();
 
+        if ($.isEmptyObject(jsonData) === true)
+            return true;
+
         //if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) return true; // same with continue in js for
         if (typeof(jsonData[problem]) == "undefined" || !jsonData[problem]) {
             jsonData[problem] = {};
