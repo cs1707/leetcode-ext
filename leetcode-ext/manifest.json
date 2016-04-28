@@ -16,6 +16,10 @@
     "default_title": "LeetCode Extension",
     "default_popup": "popup/popup.html"
   },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "permissions": [
     "storage",
     "tabs",
