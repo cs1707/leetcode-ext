@@ -3,6 +3,8 @@
  */
 
 chrome.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === "install")
-        chrome.tabs.create({url: "chrome://extensions/?options=" + chrome.runtime.id});
+    if (details.reason === "install") {
+        chrome.runtime.openOptionsPage();
+        //chrome.tabs.create({url: "chrome://extensions/?options=" + chrome.runtime.id});
+    }
 });

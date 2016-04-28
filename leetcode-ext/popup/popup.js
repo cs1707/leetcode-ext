@@ -16,7 +16,9 @@ window.onload = function() {
                 } else if (this.id === 'go_github') {
                     url = "https://github.com/" + items.user + "/" + items.repo_name;
                 } else if (this.id === 'go_settings') {
-                    url = "chrome://extensions/?options=" + chrome.runtime.id;
+                    //url = "chrome://extensions/?options=" + chrome.runtime.id;
+                    chrome.runtime.openOptionsPage();
+                    return true;
                 }
                 chrome.tabs.create({url: url});
             };
