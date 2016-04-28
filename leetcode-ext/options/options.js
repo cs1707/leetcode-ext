@@ -22,7 +22,7 @@ function restore_options() {
         oauth_token: '',
         repo_name: '',
         repo_private: 0,
-        commit: [],
+        commit: ["accepted", "time limit exceeded", "compile error", "runtime error"],
         ac_difficulty: 'show',
         comment: '[{title}][{state}]committed by LeetCode Extension',
         auto_commit: 'none',
@@ -42,23 +42,28 @@ function restore_options() {
                 this.checked = $.inArray($(this).val(), items.commit) !== -1;
             }
         });
+        save_commit();
 
         $('input[name="ac_difficulty"]').each(function() {
             this.checked = this.value == items.ac_difficulty;
         });
+        save_ac_difficulty();
         $('input[name="auto_commit"]').each(function() {
             this.checked = this.value == items.auto_commit;
         });
+        save_auto_commit();
         $('input[name="progress"]').each(function() {
             this.checked = this.value == items.progress;
         });
+        save_progress();
         $('input[name="countdown"]').each(function() {
             this.checked = this.value == items.countdown;
         });
+        save_countdown();
         $("#comment").val(items.comment);
         save_comment();
 
-        if (items.oauth_token != "") {
+        if (items.oauth_token !== "") {
             github_op.set_token(items.oauth_token, cb_check_token);
         }
     });
