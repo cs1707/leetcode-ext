@@ -29,12 +29,12 @@ function add_quick_access(td, problem) {
     td.append(
         $("<span class='pull-right'></span>")
     );
-    td.children("span").append(
+    td.children("span:last").append(
         $("<a href='https://leetcode.com/problems/" + problem + "/submissions/'></a>").html(
             $("<i class='fa fa-fw fa-bar-chart' aria-hidden='true'></i>")
         )
     );
-    td.children("span").append(
+    td.children("span:last").append(
         $("<a href='https://leetcode.com/discuss/questions/oj/" + problem + "/'></a>").html(
             $("<i class='fa fa-fw fa-comments' aria-hidden='true'></i>")
         )
