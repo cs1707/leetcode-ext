@@ -53,6 +53,10 @@
     {
       "matches": ["https://leetcode.com/problemset/algorithms/", "https://leetcode.com/problems/*"],
       "js": ["lib/jquery.js", "leetcode-unlock.js"]
+    },
+    {
+      "matches": ["https://leetcode.com/problemset/*","https://leetcode.com/submissions/", "https://leetcode.com/tag/*"],
+      "js": ["lib/jquery.js", "leetcode-quickaccess.js"]
     }
   ],
   "manifest_version": 2
