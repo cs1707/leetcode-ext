@@ -48,7 +48,7 @@ jsdom.env({
             var contributor = {};
             contributor.github = "crawler";
             contributor.leetcode = "crawler";
-            contributor.version = "1.0.3";
+            contributor.version = "1.1.0";
 
             var data = {};
             data.problem = problem;
@@ -98,7 +98,7 @@ jsdom.env({
             var contributor = {};
             contributor.github = "crawler";
             contributor.leetcode = "crawler";
-            contributor.version = "1.0.3";
+            contributor.version = "1.1.0";
 
             var data = {};
             data.problem = problem;
