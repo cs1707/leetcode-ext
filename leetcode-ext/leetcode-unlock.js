@@ -15,11 +15,11 @@ $(function() {
         $("#problemList tbody tr").each(function () {
             var $td = $(this).children("td:eq(2)");
             var problem = $td.children("a:first").html();
-            var locked = $td.children("i").length === 0 ? 0 : 1;
+            var locked = $td.find(".fa-unlock,.fa-lock").length === 0 ? false : true;
 
             problem_rows[problem] = $(this).html();
 
-            if (locked === 0) // skip if this problem is not a locked problem
+            if (locked === false) // skip if this problem is not a locked problem
                 return true;
 
             if ($td.children("i").attr("class") === "fa fa-unlock")
