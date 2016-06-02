@@ -39,12 +39,10 @@ $(function() {
 });
 
 function add_check() {
-    var $check = '<div class="row col-md-4"><div class="checkbox" style="margin: 5px 15px">' +
-        '<label>' +
+    var $check = '<label class="col-md-4 form-control form-control-inline" style="margin: 0 0 0 10px">' +
             '<input type="checkbox" id="hide_locked" checked="false"> Hide locked problems' +
-        '</label>' +
-    '</div></div>';
-    $(".blog-main .row:nth-child(2)").after($check);
+        '</label>';
+    $(".container .row:nth-child(2) #filterchosen").after($check);
     $("#hide_locked").click(hide_locked);
 }
 

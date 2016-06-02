@@ -94,6 +94,7 @@ $(function(){
 });
 
 function add_node() {
+    $(".row:nth(3)>div").attr("class", "col-md-12");
     var $buttons = $("" +
         "<button type='button' class='btn btn-success' id='commit_question'>Add Question</button>&nbsp;" +
         "<button type='button' class='btn btn-success' data-toggle='modal' data-target='#readme' id='readme_button'>Add 'README.md'</button>" +
