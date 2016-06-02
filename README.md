@@ -48,6 +48,11 @@ This project is just for study, if you can afford, please subscrib to support <h
 
 ## Release Notes
 
+v1.1.2 (2016-06-02)  
+
+- Optimize UI.
+- Add update notification.
+
 v1.1.1 (2016-06-01)
 
 - Bug fix: The bug that hiding locked problems will hide all the problems has been fixed.
