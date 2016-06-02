@@ -40,7 +40,7 @@ In problem page, the company tag button will appear even if you are not a subscr
 
 ## Contribution
 
-**Quick Access Link** is contributed by [Yiding Liu](https://github.com/petrosliu)
+**Quick Access Link** is contributed by [Yiding Liu](https://github.com/petrosliu).
 
 ## Acknowledge
 
@@ -63,7 +63,7 @@ v1.1.0 (2016-05-28)
 
 v1.0.5  (2016-04-23)
 
-Add option to commit question.md automitically when entering problem page.
+- Add option to commit question.md automitically when entering problem page.
 
 v1.0.0 (2016-04-18)
 
