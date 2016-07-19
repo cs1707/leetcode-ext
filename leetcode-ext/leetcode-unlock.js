@@ -101,7 +101,7 @@ function add_node_problem() {
 }
 
 function add_node_company() {
-    $(".sidebar-module:eq(3)").children("ul:first").children(":gt(0)").each(function() {
+    $(".sidebar-module:eq(3) > div").children("ul:first").children(":gt(0)").each(function() {
         var company = $(this).children("small").html();
         $(this).attr("href", "#company_modal")
                .attr("data-toggle", "modal")
