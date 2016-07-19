@@ -2,8 +2,6 @@
  * Created by binarylu on 3/18/16.
  */
 
-var github_api = 'https://api.github.com';
-
 var token = "";
 var user = "";
 var repo = "";
@@ -188,7 +186,7 @@ function restore() {
 
 function get_file(filename, fsucc, ferr) {
     $.ajax({
-        url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
+        url: global_config.github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
         type: 'get',
         dataType: 'json',
         async: true,
@@ -245,7 +243,7 @@ function update_file(filename, sha) {
     message = parse_comment(message);
 
     $.ajax({
-        url: github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
+        url: global_config.github_api + '/repos/' + user  + '/' + repo + '/contents/' + filename,
         type: 'put',
         dataType: 'json',
         async: true,
@@ -367,6 +365,7 @@ function upload_problem() {
     contributor.version = chrome.runtime.getManifest().version;
 
     var data = {};
+    data.version = global_config.json_version;
     data.problem = problem;
     data.md5 = md5(JSON.stringify(problem));
     data.companies = companies.sort();
@@ -377,7 +376,7 @@ function upload_problem() {
     data.create_time = new Date();
 
     $.ajax({
-        url: "https://chrome-ext.luxiakun.com/leetcode-ext/problem",
+        url: global_config.server_url + "/leetcode-ext/problem",
         type: 'post',
         contentType: "application/json",
         dataType: 'json',

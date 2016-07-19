@@ -118,6 +118,7 @@ function get_company(req, res) {
 
 function save_problem(req, res) {
     var data = req.body;
+    var version = data.version;
     var title = data.problem.title;
     var md5_string = data.md5;
     var locked = data.locked;
@@ -126,7 +127,7 @@ function save_problem(req, res) {
     var tags = data.tags;
     var similarities = data.similarities;
 
-    if (data.contributor.version !== '1.1.0' && data.contributor.github !== 'crawler') {
+    if (version !== '1.0') {
         res.send({"res": "version is out of date"});
         return;
     }

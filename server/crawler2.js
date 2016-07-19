@@ -66,6 +66,7 @@ jsdom.env({
                 contributor.version = "1.1.0";
 
                 var data = {};
+                data.version = "1.0";
                 data.problem = problem;
                 data.md5 = md5(JSON.stringify(problem));
                 data.companies = [];

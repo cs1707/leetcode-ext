@@ -6,5 +6,8 @@
 
 var global_config = {
     client_id: "",
-    client_secret: ""
+    client_secret: "",
+    server_url: "",
+    github_api: 'https://api.github.com',
+    json_version: "1.0"
 };
