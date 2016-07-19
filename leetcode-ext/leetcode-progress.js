@@ -152,7 +152,7 @@ function update_statistic(jsonData) {
 }
 
 function draw_bar(sidebar, tag_ac, tag_nac) {
-    var $obj = sidebar === "company" ? $(".sidebar-module:eq(3)") : $(".sidebar-module:eq(4)");
+    var $obj = sidebar === "company" ? $(".sidebar-module:eq(3) > div") : $(".sidebar-module:eq(4) > div");
     $obj.children("ul:first").children(":gt(0)").each(function() {
         var tag = $(this).children("small").html();
 
