@@ -48,7 +48,8 @@ function add_check() {
 
 function add_chart() {
     var $chart = $('<div class="row sidebar-module">' +
-        '<ul class="col-md-offset-3 col-md-9 list-group">' +
+        '<div class="col-md-offset-2 col-md-10">' +
+        '<ul class="list-group">' +
         '<li class="list-group-item list-group-item-warning">' +
         '<strong>' +
         '<span class="glyphicon glyphicon-plane"></span>' +
@@ -60,6 +61,7 @@ function add_chart() {
         '</div>' +
         '</li>' +
         '</ul>' +
+        '</div>' +
         '</div>');
     $(".sidebar-module:last").after($chart);
 }
