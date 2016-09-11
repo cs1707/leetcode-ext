@@ -279,7 +279,22 @@ function set_status(filename, repo, status) {
 }
 
 function get_path() {
-    return $(".question-title:first").children(":first").html().replace(/ /g, "-").replace(/\./g, "");
+    var str = $(".question-title:first").children(":first").html()
+    var index = str.indexOf('.')
+    var num = str.substring(0, index)
+    var title = str.substring(index + 1)
+
+    return leftpad(num, 3, 0) + title.replace(/\s+/g, '-').toLowerCase()
+}
+
+function leftpad(str, len, ch) {
+    if (!ch && ch !== 0) ch = ' ';
+    var len = len - str.length;
+    while (len > 0) {
+       str = ch + str
+       len--
+    }
+    return str
 }
 
 function get_filename() {
